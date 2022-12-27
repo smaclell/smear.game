@@ -14,7 +14,7 @@ type Player = {
   name: string;
   cards: Cards;
   played?: Card;
-  bid: number;
+  bid?: number;
 };
 
 const PlayerCount = 4;
@@ -37,7 +37,6 @@ function createPlayer(name: string): Player {
   return {
     name,
     cards: [],
-    bid: 0,
   };
 }
 
@@ -62,6 +61,17 @@ export const useGameStore = defineStore('game', {
     ],
   }),
   getters: {
+    maxBid(state): [number, number] {
+      return state.players.reduce(
+        ([mb, mi], c, i) => {
+          if (c.bid && mb < c.bid) {
+            return [c.bid, i];
+          }
+          return [mb, mi];
+        },
+        [-1, 0]
+      );
+    },
     active: (state): PlayerIndex =>
       ((state.started + state.played) % PlayerCount) as PlayerIndex,
   },
@@ -75,9 +85,35 @@ export const useGameStore = defineStore('game', {
       this.players[playerId].bid = value;
       if (this.played === PlayerCount) {
         this.mode = Mode.Playing;
+
+        const bid = this.maxBid;
+        this.started = bid[1] as PlayerIndex;
         this.played = 0;
       }
 
+      return true;
+    },
+    play(playerId: PlayerIndex, card: Card) {
+      if (this.active !== playerId || this.mode !== Mode.Playing) {
+        return false;
+      }
+
+      const player = this.players[playerId];
+      if (player.played) {
+        return false;
+      }
+
+      const found = player.cards.find((c) => c === card);
+      if (!found) {
+        return false;
+      }
+
+      if (!this.trump) {
+        this.trump = found.suit;
+      }
+
+      this.played++;
+      player.played = found;
       return true;
     },
   },
