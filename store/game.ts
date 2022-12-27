@@ -2,19 +2,20 @@ import { defineStore } from 'pinia';
 import { Suit, Card, getPerfectDeck, shuffle } from '../CardTypes';
 
 export enum Mode {
-  Blank,
-  Dealing,
-  Bidding,
-  Playing,
-  Score,
-  Game,
+  Blank = 'Blank',
+  Dealing = 'Dealing',
+  Bidding = 'Bidding',
+  Playing = 'Playing',
+  Score = 'Score',
+  Game = 'Game',
 }
 
 type Cards = Card[];
 
-type Player = {
+export type Player = {
+  id: number;
   name: string;
-  cards: Cards;
+  cards: Card[];
   played?: Card;
   bid?: number;
 };
@@ -35,8 +36,9 @@ type State = {
   players: [Player, Player, Player, Player];
 };
 
-function createPlayer(name: string): Player {
+function createPlayer(id: number, name: string): Player {
   return {
+    id,
     name,
     cards: [],
   };
@@ -56,10 +58,10 @@ export const useGameStore = defineStore('game', {
     mode: Mode.Blank,
 
     players: [
-      createPlayer('scott'),
-      createPlayer('mom'),
-      createPlayer('dad'),
-      createPlayer('ange'),
+      createPlayer(0, 'scott'),
+      createPlayer(1, 'mom'),
+      createPlayer(2, 'dad'),
+      createPlayer(3, 'ange'),
     ],
   }),
   getters: {
@@ -85,7 +87,14 @@ export const useGameStore = defineStore('game', {
   },
   actions: {
     bid(playerId: PlayerIndex, value: number) {
-      if (this.active !== playerId || this.mode !== Mode.Bidding) {
+      if (
+        this.active !== playerId ||
+        (this.mode !== Mode.Bidding && !this.ready)
+      ) {
+        return false;
+      }
+
+      if (this.players[playerId].bid) {
         return false;
       }
 
@@ -94,7 +103,10 @@ export const useGameStore = defineStore('game', {
       return true;
     },
     play(playerId: PlayerIndex, card: Card) {
-      if (this.active !== playerId || this.mode !== Mode.Playing) {
+      if (
+        this.active !== playerId ||
+        (this.mode !== Mode.Playing && !this.ready)
+      ) {
         return false;
       }
 
@@ -124,6 +136,7 @@ export const useGameStore = defineStore('game', {
       if (this.mode === Mode.Bidding) {
         this.mode = Mode.Playing;
 
+        // TODO: This was setting the wrong player
         const bid = this.maxBid;
         this.started = bid[1] as PlayerIndex;
         this.played = 0;

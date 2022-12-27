@@ -13,6 +13,7 @@
       'rounded',
       { flip: false, 'text-red-500': red, 'text-black': !red },
     ]"
+    @click="emit('click', card)"
   >
     <div class="justify-start self-start">
       <span>{{ label }}</span> <span>{{ icon }}</span>
@@ -62,6 +63,10 @@ const red = computed(
 );
 const icon = computed(() => suits[card.value.suit]);
 const label = computed(() => lookup[card.value.value]);
+
+const emit = defineEmits<{
+  (e: 'click', card: Card): void;
+}>();
 </script>
 
 <style lang="postcss" scoped>
