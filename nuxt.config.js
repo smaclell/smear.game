@@ -34,11 +34,12 @@ export default {
     '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxt/postcss8',
+    '@nuxtjs/composition-api/module',
+    '@pinia/nuxt',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    '@pinia/nuxt',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
@@ -62,14 +63,6 @@ export default {
         tailwindcss: {},
         autoprefixer: {},
       },
-    },
-    extend(config) {
-      // HACK from: https://github.com/vuejs/pinia/issues/675 (the mix of tools does not quite work)
-      config.module.rules.push({
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: 'javascript/auto',
-      });
     },
   },
 };
