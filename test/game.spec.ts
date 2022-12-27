@@ -1,6 +1,20 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { Mode, useGameStore } from '@/store/game';
-import { Card, Suit } from '~/CardTypes';
+import { Card, CardValue, Suit } from '~/CardTypes';
+
+function createCard(suit: Suit, value: CardValue): Card {
+  return { suit, value };
+}
+
+const two = createCard(Suit.Hearts, 2);
+const three = createCard(Suit.Hearts, 3);
+const six = createCard(Suit.Clubs, 6);
+const seven = createCard(Suit.Spades, 7);
+const ten = createCard(Suit.Hearts, 10);
+const jack = createCard(Suit.Hearts, 11);
+const queen = createCard(Suit.Clubs, 12);
+const king = createCard(Suit.Spades, 13);
+const ace = createCard(Suit.Hearts, 14);
 
 describe('store/game', () => {
   beforeEach(() => {
@@ -52,10 +66,12 @@ describe('store/game', () => {
       expect(store.players[2].bid).toEqual(3);
       expect(store.players[3].bid).toEqual(4);
 
-      expect(store.started).toEqual(0);
-      expect(store.active).toEqual(0);
-      expect(store.played).toEqual(0);
-      expect(store.mode).toEqual(Mode.Playing);
+      expect(store.started).toEqual(1);
+      expect(store.active).toEqual(1);
+      expect(store.played).toEqual(4);
+
+      expect(store.ready).toEqual(true);
+      expect(store.mode).toEqual(Mode.Bidding);
     });
 
     it('cannot bid for the wrong player', () => {
@@ -95,8 +111,6 @@ describe('store/game', () => {
         mode: Mode.Playing,
       });
 
-      const two: Card = { suit: Suit.Hearts, value: 2 };
-
       store.players[1].cards = [two];
       expect(store.players[1].played).toBeUndefined();
 
@@ -119,11 +133,6 @@ describe('store/game', () => {
       store.$patch({
         mode: Mode.Playing,
       });
-
-      const two: Card = { suit: Suit.Hearts, value: 2 };
-      const ace: Card = { suit: Suit.Hearts, value: 14 };
-      const ten: Card = { suit: Suit.Hearts, value: 10 };
-      const seven: Card = { suit: Suit.Spades, value: 7 };
 
       store.players[0].cards = [seven];
       expect(store.players[0].played).toBeUndefined();
@@ -149,6 +158,9 @@ describe('store/game', () => {
       expect(store.players[1].played).toEqual(two);
       expect(store.players[2].played).toEqual(ten);
       expect(store.players[3].played).toEqual(ace);
+
+      expect(store.ready).toEqual(true);
+      expect(store.mode).toEqual(Mode.Playing);
     });
 
     it('only play once', () => {
@@ -156,8 +168,6 @@ describe('store/game', () => {
       store.$patch({
         mode: Mode.Playing,
       });
-
-      const two: Card = { suit: Suit.Hearts, value: 2 };
 
       store.players[1].cards = [two];
       store.players[1].played = two;
@@ -177,9 +187,6 @@ describe('store/game', () => {
         mode: Mode.Playing,
       });
 
-      const two: Card = { suit: Suit.Hearts, value: 2 };
-      const three: Card = { suit: Suit.Hearts, value: 3 };
-
       store.players[1].cards = [two];
 
       expect(store.played).toEqual(0);
@@ -196,9 +203,6 @@ describe('store/game', () => {
       store.$patch({
         mode: Mode.Playing,
       });
-
-      const two: Card = { suit: Suit.Hearts, value: 2 };
-      const three: Card = { suit: Suit.Hearts, value: 3 };
 
       store.players[1].cards = [two];
       store.players[2].cards = [three];
@@ -218,8 +222,6 @@ describe('store/game', () => {
         mode: Mode.Bidding,
       });
 
-      const two: Card = { suit: Suit.Hearts, value: 2 };
-
       store.players[1].cards = [two];
 
       expect(store.played).toEqual(0);
@@ -229,6 +231,304 @@ describe('store/game', () => {
 
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
+    });
+  });
+
+  describe('next', () => {
+    describe('moves to playing after', () => {
+      it('everyone bids', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Bidding,
+          started: 1,
+          played: 4,
+        });
+
+        store.players[0].bid = 2;
+        store.players[2].bid = 3;
+        expect(store.ready).toBe(true);
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.ready).toBe(false);
+        expect(store.played).toEqual(0);
+        expect(store.started).toEqual(2);
+        expect(store.mode).toEqual(Mode.Playing);
+      });
+    });
+
+    describe('after playing', () => {
+      it('moves to scoring from the last hand without trump', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Playing,
+          started: 2,
+          played: 4,
+          trump: Suit.Clubs,
+        });
+
+        store.players[0].cards = [seven];
+        store.players[0].played = seven;
+
+        store.players[1].cards = [two];
+        store.players[1].played = two;
+
+        store.players[2].cards = [ten];
+        store.players[2].played = ten;
+
+        store.players[3].cards = [ace];
+        store.players[3].played = ace;
+
+        expect(store.ready).toBe(true);
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.players[0].cards).toEqual([]);
+        expect(store.players[0].played).toBeUndefined();
+
+        expect(store.players[1].cards).toEqual([]);
+        expect(store.players[1].played).toBeUndefined();
+
+        expect(store.players[2].cards).toEqual([]);
+        expect(store.players[2].played).toBeUndefined();
+
+        expect(store.players[3].cards).toEqual([]);
+        expect(store.players[3].played).toBeUndefined();
+
+        expect(store.redPlayed).toContain(seven);
+        expect(store.redPlayed).toContain(ten);
+
+        expect(store.bluePlayed).toContain(two);
+        expect(store.bluePlayed).toContain(ace);
+
+        expect(store.played).toEqual(0);
+        expect(store.started).toEqual(3);
+        expect(store.mode).toEqual(Mode.Score);
+      });
+
+      it('moves to scoring the last hand with trump', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Playing,
+          started: 2,
+          played: 4,
+          trump: Suit.Spades,
+        });
+
+        store.trump = Suit.Spades; // HACK: The patch did not work as expected
+        expect(store.trump).toEqual(Suit.Spades);
+
+        store.players[0].cards = [seven];
+        store.players[0].played = seven;
+
+        store.players[1].cards = [two];
+        store.players[1].played = two;
+
+        store.players[2].cards = [ten];
+        store.players[2].played = ten;
+
+        store.players[3].cards = [ace];
+        store.players[3].played = ace;
+
+        expect(store.ready).toBe(true);
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.players[0].cards).toEqual([]);
+        expect(store.players[0].played).toBeUndefined();
+
+        expect(store.players[1].cards).toEqual([]);
+        expect(store.players[1].played).toBeUndefined();
+
+        expect(store.players[2].cards).toEqual([]);
+        expect(store.players[2].played).toBeUndefined();
+
+        expect(store.players[3].cards).toEqual([]);
+        expect(store.players[3].played).toBeUndefined();
+
+        expect(store.redPlayed).toContain(seven);
+        expect(store.redPlayed).toContain(ten);
+
+        expect(store.bluePlayed).toContain(two);
+        expect(store.bluePlayed).toContain(ace);
+
+        expect(store.played).toEqual(0);
+        expect(store.started).toEqual(0);
+        expect(store.mode).toEqual(Mode.Score);
+      });
+
+      it('plays again if there are more cards', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Playing,
+          started: 2,
+          played: 4,
+          trump: Suit.Spades,
+        });
+
+        store.trump = Suit.Spades; // HACK: The patch did not work as expected
+        expect(store.trump).toEqual(Suit.Spades);
+
+        const tenSpades = createCard(Suit.Spades, 10);
+
+        store.players[0].cards = [seven, six];
+        store.players[0].played = seven;
+
+        store.players[1].cards = [two];
+        store.players[1].played = two;
+
+        store.players[2].cards = [tenSpades];
+        store.players[2].played = tenSpades;
+
+        store.players[3].cards = [ace];
+        store.players[3].played = ace;
+
+        expect(store.ready).toBe(true);
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.players[0].cards).toEqual([six]);
+        expect(store.players[0].played).toBeUndefined();
+
+        expect(store.players[1].cards).toEqual([]);
+        expect(store.players[1].played).toBeUndefined();
+
+        expect(store.players[2].cards).toEqual([]);
+        expect(store.players[2].played).toBeUndefined();
+
+        expect(store.players[3].cards).toEqual([]);
+        expect(store.players[3].played).toBeUndefined();
+
+        expect(store.redPlayed).toContain(seven);
+        expect(store.redPlayed).toContain(tenSpades);
+
+        expect(store.bluePlayed).toContain(two);
+        expect(store.bluePlayed).toContain(ace);
+
+        expect(store.played).toEqual(0);
+        expect(store.started).toEqual(2);
+        expect(store.mode).toEqual(Mode.Playing);
+      });
+    });
+
+    describe('scores played cards', () => {
+      it('scores played cards for a losing bid then bids again', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Score,
+          started: 2,
+          played: 4,
+          trump: Suit.Hearts,
+        });
+
+        store.trump = Suit.Hearts; // HACK: The patch did not work as expected
+        expect(store.trump).toEqual(Suit.Hearts);
+
+        store.players[0].bid = 3;
+        store.redPlayed = [two, six, seven, ace];
+        store.bluePlayed = [ten, jack, king, queen];
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.redScore).toEqual(-3);
+        expect(store.blueScore).toEqual(2);
+
+        expect(store.redPlayed).toEqual([]);
+        expect(store.bluePlayed).toEqual([]);
+      });
+
+      it('scores played cards for a matching bid then bids again', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Score,
+          started: 2,
+          played: 4,
+          trump: Suit.Hearts,
+        });
+
+        store.trump = Suit.Hearts; // HACK: The patch did not work as expected
+        expect(store.trump).toEqual(Suit.Hearts);
+
+        store.players[0].bid = 2;
+        store.redPlayed = [two, six, ace];
+        store.bluePlayed = [ten, king, queen];
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.redScore).toEqual(2);
+        expect(store.blueScore).toEqual(1);
+
+        expect(store.redPlayed).toEqual([]);
+        expect(store.bluePlayed).toEqual([]);
+      });
+
+      it('scores played cards for a great bid then bids again', () => {
+        const store = useGameStore();
+        store.$patch({
+          mode: Mode.Score,
+          started: 2,
+          played: 4,
+          trump: Suit.Hearts,
+        });
+
+        store.trump = Suit.Hearts; // HACK: The patch did not work as expected
+        expect(store.trump).toEqual(Suit.Hearts);
+
+        store.players[0].bid = 3;
+        store.redPlayed = [two, jack, ace];
+        store.bluePlayed = [ten, king, queen];
+
+        expect(store.next()).toEqual(true);
+
+        expect(store.redScore).toEqual(3);
+        expect(store.blueScore).toEqual(1);
+
+        expect(store.redPlayed).toEqual([]);
+        expect(store.bluePlayed).toEqual([]);
+      });
+    });
+
+    it('dealing moves to bidding after dealing to everyone', () => {
+      const store = useGameStore();
+      store.$patch({
+        mode: Mode.Dealing,
+        dealer: 2,
+        started: 3,
+        played: 0,
+      });
+
+      store.players[0].bid = 1;
+      store.players[1].bid = 1;
+      store.players[2].bid = 1;
+      store.players[3].bid = 1;
+
+      expect(store.next()).toEqual(true);
+
+      expect(store.players[0].cards).toHaveLength(6);
+      expect(store.players[1].cards).toHaveLength(6);
+      expect(store.players[2].cards).toHaveLength(6);
+      expect(store.players[3].cards).toHaveLength(6);
+
+      expect(store.players[0].bid).toBeUndefined();
+      expect(store.players[1].bid).toBeUndefined();
+      expect(store.players[2].bid).toBeUndefined();
+      expect(store.players[3].bid).toBeUndefined();
+
+      expect(store.dealer).toEqual(3);
+      expect(store.started).toEqual(0);
+
+      expect(store.mode).toEqual(Mode.Bidding);
+    });
+
+    it('blank moves to dealing', () => {
+      const store = useGameStore();
+      store.$patch({
+        mode: Mode.Blank,
+      });
+
+      expect(store.next()).toEqual(true);
+
+      expect(store.mode).toEqual(Mode.Dealing);
     });
   });
 });
