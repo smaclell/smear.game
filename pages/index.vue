@@ -7,7 +7,10 @@
       :right="right"
       :bottom="bottom"
     />
-    <PlayerHand class="col-span-3 row-start-3 self-end" :cards="hand" />
+    <PlayerHand class="row-start-2 col-start-1 self-center" v-bind="mom" />
+    <PlayerHand class="col-span-3 row-start-1 self-start" v-bind="dad" />
+    <PlayerHand class="row-start-2 col-start-3 self-center" v-bind="ange" />
+    <PlayerHand class="col-span-3 row-start-3 self-end" v-bind="scott" />
   </div>
 </template>
 
@@ -18,8 +21,32 @@ import { shuffle, getPerfectDeck } from '../CardTypes';
 
 <script lang="ts">
 const deck = shuffle(getPerfectDeck());
-const hand = deck.slice(0, 6);
-const [left, top, right, bottom] = deck.slice(6, 10);
+
+let left, top, right, bottom;
+
+const scott = {
+  active: false,
+  name: 'scott',
+  cards: deck.slice(0, 6),
+};
+
+const mom = {
+  active: false,
+  name: 'mom',
+  cards: deck.slice(6, 12),
+};
+
+const dad = {
+  active: false,
+  name: 'dad',
+  cards: deck.slice(12, 18),
+};
+
+const ange = {
+  active: false,
+  name: 'ange',
+  cards: deck.slice(18, 24),
+};
 
 export default Vue.extend({
   name: 'IndexPage',

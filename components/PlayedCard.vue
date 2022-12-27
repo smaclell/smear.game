@@ -25,9 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import { Suit, CardValue } from '../CardTypes';
+import { computed } from 'vue';
+import { Suit, Card } from '../CardTypes';
 
-type Props = { suit: Suit; value: CardValue };
+type Props = { card: Card };
 
 const props = defineProps<Props>();
 
@@ -54,9 +55,13 @@ const lookup = [
   'King',
   'Ace',
 ];
-const red = props.suit === Suit.Hearts || props.suit === Suit.Diamonds;
-const icon = suits[props.suit];
-const label = lookup[props.value];
+
+const card = computed<Card>(() => props.card);
+const red = computed(
+  () => card.value.suit === Suit.Hearts || card.value.suit === Suit.Diamonds
+);
+const icon = computed(() => suits[card.value.suit]);
+const label = computed(() => lookup[card.value.value]);
 </script>
 
 <style lang="postcss" scoped>

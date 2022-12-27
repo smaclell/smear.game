@@ -3,18 +3,18 @@
     <PlayedCard
       v-if="props.left"
       class="col-start-1 row-start-1 row-end-3 left"
-      v-bind="props.left"
+      :card="props.left"
     />
-    <PlayedCard v-if="props.top" class="col-start-2 top" v-bind="props.top" />
+    <PlayedCard v-if="props.top" class="col-start-2 top" :card="props.top" />
     <PlayedCard
       v-if="props.right"
       class="col-start-3 row-start-1 row-end-3 right"
-      v-bind="props.right"
+      :card="props.right"
     />
     <PlayedCard
       v-if="props.bottom"
       class="col-start-2 bottom"
-      v-bind="props.bottom"
+      :card="props.bottom"
     />
   </div>
 </template>
