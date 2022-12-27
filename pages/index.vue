@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-3 grid-rows-3">
+  <div class="grid grid-cols-3 grid-rows-3 h-screen">
     <PlayArea
       class="col-start-2 row-start-2"
       :left="left"
@@ -7,10 +7,22 @@
       :right="right"
       :bottom="bottom"
     />
-    <PlayerHand class="row-start-2 col-start-1 self-center" v-bind="mom" />
-    <PlayerHand class="col-span-3 row-start-1 self-start" v-bind="dad" />
-    <PlayerHand class="row-start-2 col-start-3 self-center" v-bind="ange" />
-    <PlayerHand class="col-span-3 row-start-3 self-end" v-bind="scott" />
+    <PlayerHand
+      class="row-span-3 row-start-1 col-start-1 self-center"
+      v-bind="mom"
+    />
+    <PlayerHand
+      class="col-span-3 col-start-1 row-start-1 self-start"
+      v-bind="dad"
+    />
+    <PlayerHand
+      class="row-span-3 row-start-1 col-start-3 self-center"
+      v-bind="ange"
+    />
+    <PlayerHand
+      class="col-span-3 col-start-1 row-start-3 self-end"
+      v-bind="scott"
+    />
   </div>
 </template>
 
