@@ -26,41 +26,51 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import Vue from 'vue';
-import { shuffle, getPerfectDeck } from '../CardTypes';
-</script>
-
 <script lang="ts">
-const deck = shuffle(getPerfectDeck());
+import { defineComponent } from 'vue';
+import { shuffle, getPerfectDeck } from '../CardTypes';
 
-let left, top, right, bottom;
-
-const scott = {
-  active: false,
-  name: 'scott',
-  cards: deck.slice(0, 6),
-};
-
-const mom = {
-  active: false,
-  name: 'mom',
-  cards: deck.slice(6, 12),
-};
-
-const dad = {
-  active: false,
-  name: 'dad',
-  cards: deck.slice(12, 18),
-};
-
-const ange = {
-  active: false,
-  name: 'ange',
-  cards: deck.slice(18, 24),
-};
-
-export default Vue.extend({
+export default defineComponent({
   name: 'IndexPage',
+  setup() {
+    const deck = shuffle(getPerfectDeck());
+
+    let left, top, right, bottom;
+
+    const scott = {
+      active: false,
+      name: 'scott',
+      cards: deck.slice(0, 6),
+    };
+
+    const mom = {
+      active: false,
+      name: 'mom',
+      cards: deck.slice(6, 12),
+    };
+
+    const dad = {
+      active: false,
+      name: 'dad',
+      cards: deck.slice(12, 18),
+    };
+
+    const ange = {
+      active: false,
+      name: 'ange',
+      cards: deck.slice(18, 24),
+    };
+
+    return {
+      dad,
+      mom,
+      scott,
+      ange,
+      left,
+      top,
+      bottom,
+      right,
+    };
+  },
 });
 </script>
