@@ -1,9 +1,36 @@
 <template>
   <div class="grid grid-cols-3 grid-rows-4 h-screen">
     <div class="col-span-3 row-start-4">
+      <div v-if="mode === 'Bidding'">
+        <span>Bid</span>
+        <button class="btn btn-blue" @click="bid(active, 0)">Pass</button>
+        <button
+          class="btn btn-blue"
+          :disabled="maxBid[0] >= 3"
+          @click="bid(active, 3)"
+        >
+          3
+        </button>
+        <button
+          class="btn btn-blue"
+          :disabled="maxBid[0] >= 2"
+          @click="bid(active, 2)"
+        >
+          2
+        </button>
+        <button
+          class="btn btn-blue"
+          :disabled="maxBid[0] >= 4"
+          @click="bid(active, 4)"
+        >
+          4
+        </button>
+      </div>
       <div>
         <span>{{ mode }}</span>
-        <button @click="next">Next</button>
+        <button class="btn btn-blue" :disabled="!ready" @click="next">
+          Next
+        </button>
       </div>
       <div>
         <span><strong>Trump:</strong> {{ trump }}</span>
@@ -11,13 +38,6 @@
         <span><strong>Red:</strong> {{ redScore }}</span>
         <span><strong>Blue:</strong> {{ blueScore }}</span>
         <span><strong>Bid:</strong> {{ maxBid }}</span>
-      </div>
-      <div>
-        <span>Bid</span>
-        <button @click="bid(active, 0)">0</button>
-        <button @click="bid(active, 2)">2</button>
-        <button @click="bid(active, 3)">3</button>
-        <button @click="bid(active, 4)">4</button>
       </div>
     </div>
     <PlayArea
@@ -63,7 +83,7 @@ export default defineComponent({
   name: 'IndexPage',
   setup() {
     const store = useGameStore();
-    const { players, mode, active, trump, redScore, blueScore, maxBid } =
+    const { players, mode, ready, active, trump, redScore, blueScore, maxBid } =
       storeToRefs(store);
     const { bid, play, next } = store;
 
@@ -74,6 +94,7 @@ export default defineComponent({
     return {
       players,
       mode,
+      ready,
       active,
       trump,
       redScore,
@@ -86,3 +107,21 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.btn {
+  @apply font-bold py-2 px-4 rounded;
+}
+
+.btn-blue {
+  @apply bg-blue-500 text-white;
+}
+
+.btn-blue:hover {
+  @apply bg-blue-700;
+}
+
+[disabled] {
+  @apply opacity-50 cursor-not-allowed;
+}
+</style>
