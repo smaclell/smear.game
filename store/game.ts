@@ -296,9 +296,23 @@ export const useGameStore = defineStore('game', {
       if (this.mode === Mode.Dealing) {
         const deck = shuffle(getPerfectDeck());
 
+        const suitOrder = {
+          [Suit.Hearts]: 1,
+          [Suit.Clubs]: 2,
+          [Suit.Diamonds]: 3,
+          [Suit.Spades]: 4,
+        };
+
+        const sort = (a: Card, b: Card): number =>
+          a.suit === b.suit
+            ? a.value - b.value
+            : suitOrder[a.suit] - suitOrder[b.suit];
+        const reverse = (a: Card, b: Card): number => -1 * sort(a, b);
+
         for (let i = 0; i < this.players.length; i++) {
           this.players[i].bid = 0;
           this.players[i].cards = deck.slice(6 * i, 6 * (i + 1));
+          this.players[i].cards.sort(reverse);
         }
 
         this.dealer = ((this.dealer + 1) % PlayerCount) as PlayerIndex;
