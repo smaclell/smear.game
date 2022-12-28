@@ -17,7 +17,7 @@ export type Player = {
   name: string;
   cards: Card[];
   played?: Card;
-  bid?: number;
+  bid: number;
 };
 
 const PlayerCount = 4;
@@ -41,6 +41,7 @@ function createPlayer(id: number, name: string): Player {
     id,
     name,
     cards: [],
+    bid: 0,
   };
 }
 
@@ -136,7 +137,6 @@ export const useGameStore = defineStore('game', {
       if (this.mode === Mode.Bidding) {
         this.mode = Mode.Playing;
 
-        // TODO: This was setting the wrong player
         const bid = this.maxBid;
         this.started = bid[1] as PlayerIndex;
         this.played = 0;
@@ -297,7 +297,7 @@ export const useGameStore = defineStore('game', {
         const deck = shuffle(getPerfectDeck());
 
         for (let i = 0; i < this.players.length; i++) {
-          this.players[i].bid = undefined;
+          this.players[i].bid = 0;
           this.players[i].cards = deck.slice(6 * i, 6 * (i + 1));
         }
 

@@ -130,12 +130,14 @@ describe('store/game', () => {
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
 
+      expect(store.players[1].bid).toEqual(0);
+
       expect(store.bid(2, 2)).toBe(false);
 
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
 
-      expect(store.players[1].bid).toBeUndefined();
+      expect(store.players[1].bid).toEqual(0);
     });
 
     it('cannot bid while playing', () => {
@@ -364,7 +366,7 @@ describe('store/game', () => {
           trump: Suit.Spades,
         });
 
-        store.trump = Suit.Spades; // HACK: The patch did not work as expected
+        store.trump = Suit.Spades; // HACK: The patch did not work as expected, potentially due allowing undefined
         expect(store.trump).toEqual(Suit.Spades);
 
         store.players[0].cards = [seven];
@@ -558,10 +560,10 @@ describe('store/game', () => {
       expect(store.players[2].cards).toHaveLength(6);
       expect(store.players[3].cards).toHaveLength(6);
 
-      expect(store.players[0].bid).toBeUndefined();
-      expect(store.players[1].bid).toBeUndefined();
-      expect(store.players[2].bid).toBeUndefined();
-      expect(store.players[3].bid).toBeUndefined();
+      expect(store.players[0].bid).toEqual(0);
+      expect(store.players[1].bid).toEqual(0);
+      expect(store.players[2].bid).toEqual(0);
+      expect(store.players[3].bid).toEqual(0);
 
       expect(store.dealer).toEqual(3);
       expect(store.started).toEqual(0);
