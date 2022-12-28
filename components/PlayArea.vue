@@ -23,7 +23,7 @@
     />
     <PlayedCard
       v-if="props.bottom && props.bottom !== sentinel"
-      class="col-start-2 bottom"
+      class="col-start-2 row-end-3 bottom"
       :card="props.bottom"
       :trump="props.bottom?.suit === trump"
       allowed
