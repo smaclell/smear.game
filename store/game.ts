@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Suit, Card, getPerfectDeck, shuffle } from '../CardTypes';
+import { Suit, Card, getPerfectDeck, shuffle, Sentinel } from '../CardTypes';
 
 export enum Mode {
   Blank = 'Blank',
@@ -16,7 +16,7 @@ export type Player = {
   id: number;
   name: string;
   cards: Card[];
-  played?: Card;
+  played: Card;
   bid: number;
 };
 
@@ -25,7 +25,7 @@ type PlayerIndex = 0 | 1 | 2 | 3;
 
 type State = {
   mode: Mode;
-  trump?: Suit;
+  trump: Suit;
   dealer: PlayerIndex;
   played: PlayerIndex | 4;
   started: PlayerIndex;
@@ -42,6 +42,7 @@ function createPlayer(id: number, name: string): Player {
     name,
     cards: [],
     bid: 0,
+    played: Sentinel,
   };
 }
 
@@ -57,6 +58,7 @@ export const useGameStore = defineStore('game', {
     redPlayed: [],
 
     mode: Mode.Blank,
+    trump: Suit.Invalid,
 
     players: [
       createPlayer(0, 'scott'),
@@ -112,7 +114,7 @@ export const useGameStore = defineStore('game', {
       }
 
       const player = this.players[playerId];
-      if (player.played) {
+      if (player.played !== Sentinel) {
         return false;
       }
 
@@ -121,7 +123,7 @@ export const useGameStore = defineStore('game', {
         return false;
       }
 
-      if (!this.trump) {
+      if (!this.trump || this.trump === Suit.Invalid) {
         this.trump = found.suit;
       }
 
@@ -150,14 +152,14 @@ export const useGameStore = defineStore('game', {
 
         let winner: PlayerIndex = this.started;
         let winning = this.players[this.started].played;
-        if (!winning) {
+        if (!winning || winning === Sentinel) {
           throw new Error('You have not played');
         }
 
         for (let i = 0; i < this.players.length; i++) {
           const player = this.players[i];
           const played = player.played;
-          if (!played) {
+          if (!played || played === Sentinel) {
             throw new Error('Not everyone has played');
           }
 
@@ -174,7 +176,7 @@ export const useGameStore = defineStore('game', {
           team.push(played);
 
           player.cards = player.cards.filter((c) => c !== played);
-          player.played = undefined;
+          player.played = Sentinel;
         }
 
         this.started = winner;
@@ -183,7 +185,7 @@ export const useGameStore = defineStore('game', {
       }
 
       if (this.mode === Mode.Score) {
-        if (!this.trump) {
+        if (!this.trump || this.trump === Suit.Invalid) {
           throw new Error('There should be trump');
         }
 
@@ -297,6 +299,7 @@ export const useGameStore = defineStore('game', {
         const deck = shuffle(getPerfectDeck());
 
         const suitOrder = {
+          [Suit.Invalid]: -1,
           [Suit.Hearts]: 1,
           [Suit.Clubs]: 2,
           [Suit.Diamonds]: 3,
@@ -319,6 +322,7 @@ export const useGameStore = defineStore('game', {
         this.started = ((this.dealer + 1) % PlayerCount) as PlayerIndex;
         this.played = 0;
 
+        this.trump = Suit.Invalid;
         this.mode = Mode.Bidding;
 
         return true;

@@ -1,6 +1,6 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { Mode, useGameStore } from '@/store/game';
-import { Card, CardValue, Suit } from '~/CardTypes';
+import { Card, CardValue, Suit, Sentinel } from '~/CardTypes';
 
 function createCard(suit: Suit, value: CardValue): Card {
   return { suit, value };
@@ -163,9 +163,9 @@ describe('store/game', () => {
       });
 
       store.players[1].cards = [two];
-      expect(store.players[1].played).toBeUndefined();
+      expect(store.players[1].played).toBe(Sentinel);
 
-      expect(store.trump).toBeUndefined();
+      expect(store.trump).toBe(Suit.Invalid);
 
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
@@ -186,16 +186,16 @@ describe('store/game', () => {
       });
 
       store.players[0].cards = [seven];
-      expect(store.players[0].played).toBeUndefined();
+      expect(store.players[0].played).toBe(Sentinel);
 
       store.players[1].cards = [two];
-      expect(store.players[1].played).toBeUndefined();
+      expect(store.players[1].played).toBe(Sentinel);
 
       store.players[2].cards = [ten];
-      expect(store.players[2].played).toBeUndefined();
+      expect(store.players[2].played).toBe(Sentinel);
 
       store.players[3].cards = [ace];
-      expect(store.players[3].played).toBeUndefined();
+      expect(store.players[3].played).toBe(Sentinel);
 
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
@@ -335,16 +335,16 @@ describe('store/game', () => {
         expect(store.next()).toEqual(true);
 
         expect(store.players[0].cards).toEqual([]);
-        expect(store.players[0].played).toBeUndefined();
+        expect(store.players[0].played).toBe(Sentinel);
 
         expect(store.players[1].cards).toEqual([]);
-        expect(store.players[1].played).toBeUndefined();
+        expect(store.players[1].played).toBe(Sentinel);
 
         expect(store.players[2].cards).toEqual([]);
-        expect(store.players[2].played).toBeUndefined();
+        expect(store.players[2].played).toBe(Sentinel);
 
         expect(store.players[3].cards).toEqual([]);
-        expect(store.players[3].played).toBeUndefined();
+        expect(store.players[3].played).toBe(Sentinel);
 
         expect(store.redPlayed).toContain(seven);
         expect(store.redPlayed).toContain(ten);
@@ -366,7 +366,6 @@ describe('store/game', () => {
           trump: Suit.Spades,
         });
 
-        store.trump = Suit.Spades; // HACK: The patch did not work as expected, potentially due allowing undefined
         expect(store.trump).toEqual(Suit.Spades);
 
         store.players[0].cards = [seven];
@@ -386,16 +385,16 @@ describe('store/game', () => {
         expect(store.next()).toEqual(true);
 
         expect(store.players[0].cards).toEqual([]);
-        expect(store.players[0].played).toBeUndefined();
+        expect(store.players[0].played).toBe(Sentinel);
 
         expect(store.players[1].cards).toEqual([]);
-        expect(store.players[1].played).toBeUndefined();
+        expect(store.players[1].played).toBe(Sentinel);
 
         expect(store.players[2].cards).toEqual([]);
-        expect(store.players[2].played).toBeUndefined();
+        expect(store.players[2].played).toBe(Sentinel);
 
         expect(store.players[3].cards).toEqual([]);
-        expect(store.players[3].played).toBeUndefined();
+        expect(store.players[3].played).toBe(Sentinel);
 
         expect(store.redPlayed).toContain(seven);
         expect(store.redPlayed).toContain(ten);
@@ -417,9 +416,6 @@ describe('store/game', () => {
           trump: Suit.Spades,
         });
 
-        store.trump = Suit.Spades; // HACK: The patch did not work as expected
-        expect(store.trump).toEqual(Suit.Spades);
-
         const tenSpades = createCard(Suit.Spades, 10);
 
         store.players[0].cards = [seven, six];
@@ -439,16 +435,16 @@ describe('store/game', () => {
         expect(store.next()).toEqual(true);
 
         expect(store.players[0].cards).toEqual([six]);
-        expect(store.players[0].played).toBeUndefined();
+        expect(store.players[0].played).toBe(Sentinel);
 
         expect(store.players[1].cards).toEqual([]);
-        expect(store.players[1].played).toBeUndefined();
+        expect(store.players[1].played).toBe(Sentinel);
 
         expect(store.players[2].cards).toEqual([]);
-        expect(store.players[2].played).toBeUndefined();
+        expect(store.players[2].played).toBe(Sentinel);
 
         expect(store.players[3].cards).toEqual([]);
-        expect(store.players[3].played).toBeUndefined();
+        expect(store.players[3].played).toBe(Sentinel);
 
         expect(store.redPlayed).toContain(seven);
         expect(store.redPlayed).toContain(tenSpades);
@@ -472,9 +468,6 @@ describe('store/game', () => {
           trump: Suit.Hearts,
         });
 
-        store.trump = Suit.Hearts; // HACK: The patch did not work as expected
-        expect(store.trump).toEqual(Suit.Hearts);
-
         store.players[0].bid = 3;
         store.redPlayed = [two, six, seven, ace];
         store.bluePlayed = [ten, jack, king, queen];
@@ -496,9 +489,6 @@ describe('store/game', () => {
           played: 4,
           trump: Suit.Hearts,
         });
-
-        store.trump = Suit.Hearts; // HACK: The patch did not work as expected
-        expect(store.trump).toEqual(Suit.Hearts);
 
         store.players[0].bid = 2;
         store.redPlayed = [two, six, ace];
@@ -522,9 +512,6 @@ describe('store/game', () => {
           trump: Suit.Hearts,
         });
 
-        store.trump = Suit.Hearts; // HACK: The patch did not work as expected
-        expect(store.trump).toEqual(Suit.Hearts);
-
         store.players[0].bid = 3;
         store.redPlayed = [two, jack, ace];
         store.bluePlayed = [ten, king, queen];
@@ -546,6 +533,7 @@ describe('store/game', () => {
         dealer: 2,
         started: 3,
         played: 0,
+        trump: Suit.Clubs,
       });
 
       store.players[0].bid = 1;
@@ -567,6 +555,8 @@ describe('store/game', () => {
 
       expect(store.dealer).toEqual(3);
       expect(store.started).toEqual(0);
+
+      expect(store.trump).toEqual(Suit.Invalid);
 
       expect(store.mode).toEqual(Mode.Bidding);
     });

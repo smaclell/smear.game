@@ -11,9 +11,18 @@
       'border-black',
       'border-solid',
       'rounded',
-      { flip: false, 'text-red-500': red, 'text-black': !red },
+      !allowed
+        ? 'shadow opacity-50 cursor-not-allowed'
+        : ['cursor-grab', { 'shadow-md': !trump, 'shadow-lg': trump }],
+      {
+        flip: false,
+        'bg-amber-100': trump,
+        'text-red-500': red,
+        'text-black': !red,
+      },
     ]"
-    @click="emit('click', card)"
+    :disabled="!allowed"
+    @click="allowed && emit('click', card)"
   >
     <div class="justify-start self-start">
       <span>{{ label }}</span> <span>{{ icon }}</span>
@@ -29,7 +38,7 @@
 import { computed } from 'vue';
 import { Suit, Card } from '../CardTypes';
 
-type Props = { card: Card };
+type Props = { card: Card; allowed: boolean; trump: boolean };
 
 const props = defineProps<Props>();
 

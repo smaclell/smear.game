@@ -6,17 +6,17 @@
         <button class="btn btn-blue" @click="bid(active, 0)">Pass</button>
         <button
           class="btn btn-blue"
-          :disabled="maxBid[0] >= 3"
-          @click="bid(active, 3)"
-        >
-          3
-        </button>
-        <button
-          class="btn btn-blue"
           :disabled="maxBid[0] >= 2"
           @click="bid(active, 2)"
         >
           2
+        </button>
+        <button
+          class="btn btn-blue"
+          :disabled="maxBid[0] >= 3"
+          @click="bid(active, 3)"
+        >
+          3
         </button>
         <button
           class="btn btn-blue"

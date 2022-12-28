@@ -3,6 +3,7 @@ export enum Suit {
   Diamonds = 'Diamonds',
   Spades = 'Spades',
   Clubs = 'Clubs',
+  Invalid = 'Invalid',
 }
 
 export type CardValue = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
@@ -11,6 +12,8 @@ export type Card = {
   suit: Suit;
   value: CardValue;
 };
+
+export const Sentinel: Card = { suit: Suit.Invalid, value: 2 };
 
 export function shuffle<T>(array: T[]) {
   let currentIndex = array.length;
