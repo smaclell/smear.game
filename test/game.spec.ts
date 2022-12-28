@@ -24,6 +24,55 @@ describe('store/game', () => {
     setActivePinia(createPinia());
   });
 
+  describe('maxBid', () => {
+    it('defaults to [-1, 0]', () => {
+      const store = useGameStore();
+
+      expect(store.maxBid).toEqual([-1, 0]);
+    });
+
+    it.each`
+      p0    | p1    | p2    | p3    | b    | p
+      ${2}  | ${-1} | ${-1} | ${-1} | ${2} | ${0}
+      ${-1} | ${2}  | ${-1} | ${-1} | ${2} | ${1}
+      ${-1} | ${-1} | ${2}  | ${-1} | ${2} | ${2}
+      ${-1} | ${-1} | ${-1} | ${2}  | ${2} | ${3}
+      ${2}  | ${0}  | ${0}  | ${0}  | ${2} | ${0}
+      ${0}  | ${2}  | ${0}  | ${0}  | ${2} | ${1}
+      ${0}  | ${0}  | ${2}  | ${0}  | ${2} | ${2}
+      ${0}  | ${0}  | ${0}  | ${2}  | ${2} | ${3}
+      ${2}  | ${0}  | ${0}  | ${3}  | ${3} | ${3}
+      ${0}  | ${0}  | ${3}  | ${4}  | ${4} | ${3}
+      ${2}  | ${3}  | ${4}  | ${0}  | ${4} | ${2}
+      ${0}  | ${4}  | ${3}  | ${2}  | ${4} | ${1}
+      ${2}  | ${0}  | ${4}  | ${3}  | ${4} | ${2}
+      ${3}  | ${0}  | ${4}  | ${2}  | ${4} | ${2}
+    `(
+      'Bids of p0=$p0. p1=$p1, p2=$p2, p3=$p3 should be [$b, $p]',
+      ({ p0, p1, p2, p3, b, p }) => {
+        const store = useGameStore();
+
+        if (p0 >= 0) {
+          store.players[0].bid = p0;
+        }
+
+        if (p1 >= 0) {
+          store.players[1].bid = p1;
+        }
+
+        if (p2 >= 0) {
+          store.players[2].bid = p2;
+        }
+
+        if (p3 >= 0) {
+          store.players[3].bid = p3;
+        }
+
+        expect(store.maxBid).toEqual([b, p]);
+      }
+    );
+  });
+
   describe('bidding', () => {
     function setup() {
       const store = useGameStore();

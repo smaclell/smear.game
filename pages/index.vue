@@ -10,6 +10,7 @@
         <span><strong>Active:</strong> {{ players[active].name }}</span>
         <span><strong>Red:</strong> {{ redScore }}</span>
         <span><strong>Blue:</strong> {{ blueScore }}</span>
+        <span><strong>Bid:</strong> {{ maxBid }}</span>
       </div>
       <div>
         <span>Bid</span>
@@ -62,7 +63,7 @@ export default defineComponent({
   name: 'IndexPage',
   setup() {
     const store = useGameStore();
-    const { players, mode, active, trump, redScore, blueScore } =
+    const { players, mode, active, trump, redScore, blueScore, maxBid } =
       storeToRefs(store);
     const { bid, play, next } = store;
 
@@ -77,6 +78,7 @@ export default defineComponent({
       trump,
       redScore,
       blueScore,
+      maxBid,
       bid,
       play,
       next,
