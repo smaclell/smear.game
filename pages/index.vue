@@ -77,7 +77,7 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
-import { useGameStore } from '@/store/game';
+import { Mode, useGameStore } from '@/store/game';
 
 export default defineComponent({
   name: 'IndexPage',
@@ -87,9 +87,34 @@ export default defineComponent({
       storeToRefs(store);
     const { bid, play, next } = store;
 
-    next();
-    next();
-    next();
+    let waiting: NodeJS.Timeout | null = null;
+
+    function clear() {
+      waiting = null;
+      if (next()) {
+        clear();
+      }
+    }
+
+    function wait() {
+      if (waiting || !ready.value || mode.value === Mode.Game) {
+        return;
+      }
+
+      const delay =
+        mode.value === Mode.Score || mode.value === Mode.Bidding ? 4500 : 1500;
+      waiting = setTimeout(clear, delay);
+    }
+
+    clear();
+
+    store.$onAction(({ name, after }) => {
+      if (name !== 'next') {
+        after((result) => {
+          result && wait();
+        });
+      }
+    });
 
     return {
       players,
