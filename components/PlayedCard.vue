@@ -6,18 +6,20 @@
       'flex-col',
       'justify-between',
       'p-3',
-      'text-3xl',
+      'text-4xl',
       'border-2',
       'border-black',
       'border-solid',
       'rounded',
+      'shadow',
       !allowed
-        ? 'shadow opacity-50 cursor-not-allowed'
+        ? 'shadow-sm opacity-50 cursor-not-allowed'
         : ['cursor-grab', { 'shadow-md': !trump, 'shadow-lg': trump }],
+      'hover:shadow-xl',
       {
         flip: false,
         hidden,
-        'bg-amber-100': trump,
+        'bg-amber-50': trump,
         'text-red-500': red,
         'text-black': !red,
       },
@@ -26,11 +28,13 @@
     @click="allowed && emit('click', card)"
   >
     <div class="justify-start self-start">
-      <span>{{ label }}</span> <span>{{ icon }}</span>
+      <span>{{ icon }}</span>
     </div>
-    <div class="flex-auto" />
+    <div class="flex-auto flex items-center justify-center">
+      <span>{{ label }}</span>
+    </div>
     <div class="justify-end self-end">
-      <span>{{ label }}</span> <span>{{ icon }}</span>
+      <span>{{ icon }}</span>
     </div>
   </div>
 </template>
