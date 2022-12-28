@@ -57,7 +57,6 @@ const firstPlayed = computed<Card | null>(() => {
   return firstPlayed.suit !== Suit.Invalid ? firstPlayed : null;
 });
 
-// TODO: Separate required from allowed
 const isRecommended = computed(() => {
   return (card: Card): boolean =>
     !firstPlayed.value ||
@@ -65,8 +64,13 @@ const isRecommended = computed(() => {
     firstPlayed.value.suit === card.suit;
 });
 
+const isRequired = computed(() => {
+  return (card: Card): boolean =>
+    !!firstPlayed.value && firstPlayed.value.suit === card.suit;
+});
+
 const isAllowed = computed(() => {
-  const canRecommend = players.value[props.id].cards.some(isRecommended.value);
-  return canRecommend ? isRecommended.value : (card: Card) => !!card;
+  const hasRequired = players.value[props.id].cards.some(isRequired.value);
+  return hasRequired ? isRecommended.value : (card: Card) => !!card;
 });
 </script>
