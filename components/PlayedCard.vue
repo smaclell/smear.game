@@ -16,6 +16,7 @@
         : ['cursor-grab', { 'shadow-md': !trump, 'shadow-lg': trump }],
       {
         flip: false,
+        hidden,
         'bg-amber-100': trump,
         'text-red-500': red,
         'text-black': !red,
@@ -43,6 +44,7 @@ type Props = { card: Card; allowed: boolean; trump: boolean };
 const props = defineProps<Props>();
 
 const suits = {
+  [Suit.Invalid]: '',
   [Suit.Hearts]: '♥️',
   [Suit.Diamonds]: '♦️',
   [Suit.Spades]: '♠️',
@@ -72,6 +74,8 @@ const red = computed(
 );
 const icon = computed(() => suits[card.value.suit]);
 const label = computed(() => lookup[card.value.value]);
+
+const hidden = computed(() => card.value.suit === Suit.Invalid);
 
 const emit = defineEmits<{
   (e: 'click', card: Card): void;
