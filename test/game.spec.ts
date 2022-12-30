@@ -86,7 +86,6 @@ describe('store/game', () => {
     it('can bid for one player', () => {
       const store = setup();
 
-      expect(store.dealer).toEqual(0);
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
 
@@ -101,7 +100,6 @@ describe('store/game', () => {
     it('can bid for all player', () => {
       const store = setup();
 
-      expect(store.dealer).toEqual(0);
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
 
@@ -126,7 +124,6 @@ describe('store/game', () => {
     it('cannot bid for the wrong player', () => {
       const store = setup();
 
-      expect(store.dealer).toEqual(0);
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
 
@@ -144,7 +141,6 @@ describe('store/game', () => {
       const store = setup();
       store.$patch({ mode: Mode.Playing });
 
-      expect(store.dealer).toEqual(0);
       expect(store.played).toEqual(0);
       expect(store.active).toEqual(1);
 
@@ -524,52 +520,6 @@ describe('store/game', () => {
         expect(store.redPlayed).toEqual([]);
         expect(store.bluePlayed).toEqual([]);
       });
-    });
-
-    it('dealing moves to bidding after dealing to everyone', () => {
-      const store = useGameStore();
-      store.$patch({
-        mode: Mode.Dealing,
-        dealer: 2,
-        started: 3,
-        played: 0,
-        trump: Suit.Clubs,
-      });
-
-      store.players[0].bid = 1;
-      store.players[1].bid = 1;
-      store.players[2].bid = 1;
-      store.players[3].bid = 1;
-
-      expect(store.next()).toEqual(true);
-
-      expect(store.players[0].cards).toHaveLength(6);
-      expect(store.players[1].cards).toHaveLength(6);
-      expect(store.players[2].cards).toHaveLength(6);
-      expect(store.players[3].cards).toHaveLength(6);
-
-      expect(store.players[0].bid).toEqual(0);
-      expect(store.players[1].bid).toEqual(0);
-      expect(store.players[2].bid).toEqual(0);
-      expect(store.players[3].bid).toEqual(0);
-
-      expect(store.dealer).toEqual(3);
-      expect(store.started).toEqual(0);
-
-      expect(store.trump).toEqual(Suit.Invalid);
-
-      expect(store.mode).toEqual(Mode.Bidding);
-    });
-
-    it('blank moves to dealing', () => {
-      const store = useGameStore();
-      store.$patch({
-        mode: Mode.Blank,
-      });
-
-      expect(store.next()).toEqual(true);
-
-      expect(store.mode).toEqual(Mode.Dealing);
     });
   });
 });

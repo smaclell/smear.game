@@ -33,6 +33,4 @@ export default function start(store: StoreType): void {
       });
     }
   });
-
-  clear();
 }

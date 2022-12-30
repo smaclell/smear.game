@@ -15,6 +15,18 @@ export type Card = {
 
 export const Sentinel: Card = { suit: Suit.Invalid, value: 2 };
 
+const suitOrder = {
+  [Suit.Invalid]: -1,
+  [Suit.Hearts]: 1,
+  [Suit.Clubs]: 2,
+  [Suit.Diamonds]: 3,
+  [Suit.Spades]: 4,
+};
+
+export const sort = (a: Card, b: Card): number =>
+  a.suit === b.suit ? a.value - b.value : suitOrder[a.suit] - suitOrder[b.suit];
+export const reverseSort = (a: Card, b: Card): number => -1 * sort(a, b);
+
 export function shuffle<T>(array: T[]) {
   let currentIndex = array.length;
 

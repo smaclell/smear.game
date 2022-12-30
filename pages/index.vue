@@ -1,6 +1,19 @@
 <template>
   <div class="grid grid-cols-3 grid-rows-4 h-screen">
     <div class="col-span-3 row-start-4">
+      <div v-if="connectionMode === 'Lobby'">
+        <span>Connection:</span>
+        <button class="btn btn-blue" @click="host(DefaultGame)">Host</button>
+        <button class="btn btn-blue" @click="join(DefaultGame)">Join</button>
+      </div>
+      <div
+        v-if="
+          connectionMode === 'Host' && (mode === 'Dealing' || mode === 'Game')
+        "
+      >
+        <span>Connection:</span>
+        <button class="btn btn-blue" @click="deal">Start</button>
+      </div>
       <div v-if="mode === 'Bidding'">
         <span>Bid</span>
         <button class="btn btn-blue" @click="bid(active, 0)">Pass</button>
@@ -77,20 +90,51 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
+import {
+  ConnectionMode,
+  useConnectionsStore,
+  DefaultGame,
+} from '@/store/connections';
 import { useGameStore } from '@/store/game';
-import start from '@/store/waiter';
+import wait from '@/store/waiter';
+import { getPerfectDeck, shuffle } from '~/CardTypes';
 
 export default defineComponent({
   name: 'IndexPage',
   setup() {
+    const connections = useConnectionsStore();
+    const { mode: connectionMode } = storeToRefs(connections);
+    const { host, join } = connections;
+
+    // @ts-ignore
+    window.connections = connections;
+
     const store = useGameStore();
     const { players, mode, ready, active, trump, redScore, blueScore, maxBid } =
       storeToRefs(store);
-    const { bid, play, next } = store;
+    const { bid, play, next, start } = store;
 
-    start(store);
+    wait(store);
+
+    let dealer: number = Math.floor(Math.random() * 4);
+    function deal() {
+      if (connectionMode.value !== ConnectionMode.Host) {
+        throw new Error('Not host');
+      }
+
+      dealer++;
+      const deck = shuffle(getPerfectDeck());
+      start(0, dealer % 4, deck);
+    }
+
+    // @ts-ignore
+    window.game = store;
 
     return {
+      DefaultGame,
+      connectionMode,
+      host,
+      join,
       players,
       mode,
       ready,
@@ -99,6 +143,7 @@ export default defineComponent({
       redScore,
       blueScore,
       maxBid,
+      deal,
       bid,
       play,
       next,

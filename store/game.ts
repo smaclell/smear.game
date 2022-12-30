@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
-import { Suit, Card, getPerfectDeck, shuffle, Sentinel } from '../CardTypes';
+import { Suit, Card, Sentinel, reverseSort } from '../CardTypes';
 
 export enum Mode {
-  Blank = 'Blank',
   Dealing = 'Dealing',
   Bidding = 'Bidding',
   Playing = 'Playing',
@@ -21,12 +20,11 @@ export type Player = {
 };
 
 const PlayerCount = 4;
-type PlayerIndex = 0 | 1 | 2 | 3;
+export type PlayerIndex = 0 | 1 | 2 | 3;
 
 type State = {
   mode: Mode;
   trump: Suit;
-  dealer: PlayerIndex;
   played: PlayerIndex | 4;
   started: PlayerIndex;
   redScore: number;
@@ -48,7 +46,6 @@ function createPlayer(id: number, name: string): Player {
 
 export const useGameStore = defineStore('game', {
   state: (): State => ({
-    dealer: 0,
     played: 0,
     started: 1,
 
@@ -57,7 +54,7 @@ export const useGameStore = defineStore('game', {
     bluePlayed: [],
     redPlayed: [],
 
-    mode: Mode.Blank,
+    mode: Mode.Dealing,
     trump: Suit.Invalid,
 
     players: [
@@ -80,7 +77,6 @@ export const useGameStore = defineStore('game', {
       );
     },
     ready: (state): boolean =>
-      state.mode === Mode.Blank ||
       state.mode === Mode.Score ||
       state.mode === Mode.Game ||
       state.mode === Mode.Dealing ||
@@ -118,7 +114,9 @@ export const useGameStore = defineStore('game', {
         return false;
       }
 
-      const found = player.cards.find((c) => c === card);
+      const found = player.cards.find(
+        (c) => c.suit === card.suit && c.value === card.value
+      );
       if (!found) {
         return false;
       }
@@ -130,6 +128,45 @@ export const useGameStore = defineStore('game', {
       this.played++;
       player.played = found;
       return true;
+    },
+    start(offset: number, dealer: number, deck: Card[]) {
+      const starter = (dealer + 1) % PlayerCount;
+
+      for (let i = 0; i < this.players.length; i++) {
+        const x = (starter + i) % PlayerCount;
+        const y = (starter + i + offset) % PlayerCount;
+        const player = this.players[x];
+        player.bid = 0;
+        player.cards = deck.slice(6 * y, 6 * (y + 1));
+        player.cards.sort(reverseSort);
+      }
+
+      this.started = starter as PlayerIndex;
+      this.played = 0;
+
+      this.trump = Suit.Invalid;
+      this.mode = Mode.Bidding;
+    },
+    rotate(positions: number) {
+      if (positions < 0) {
+        throw new Error('Cannot be less than zero');
+      }
+
+      if (positions === 0) {
+        return;
+      }
+
+      const player = this.players.shift();
+      if (!player) {
+        throw new Error('There should always be a player');
+      }
+
+      this.players.push(player);
+      this.players.forEach((p, i) => {
+        p.id = i as PlayerIndex;
+      });
+
+      this.rotate(positions - 1);
     },
     next() {
       if (!this.ready) {
@@ -223,10 +260,9 @@ export const useGameStore = defineStore('game', {
         const redGame = gamePoints(this.redPlayed);
         const blueGame = gamePoints(this.bluePlayed);
 
-        // TODO: Can there be ties?
         if (redGame > blueGame) {
           red++;
-        } else {
+        } else if (redGame < blueGame) {
           blue++;
         }
 
@@ -291,44 +327,6 @@ export const useGameStore = defineStore('game', {
         this.redPlayed = [];
         this.bluePlayed = [];
 
-        this.mode = Mode.Dealing;
-        return true;
-      }
-
-      if (this.mode === Mode.Dealing) {
-        const deck = shuffle(getPerfectDeck());
-
-        const suitOrder = {
-          [Suit.Invalid]: -1,
-          [Suit.Hearts]: 1,
-          [Suit.Clubs]: 2,
-          [Suit.Diamonds]: 3,
-          [Suit.Spades]: 4,
-        };
-
-        const sort = (a: Card, b: Card): number =>
-          a.suit === b.suit
-            ? a.value - b.value
-            : suitOrder[a.suit] - suitOrder[b.suit];
-        const reverse = (a: Card, b: Card): number => -1 * sort(a, b);
-
-        for (let i = 0; i < this.players.length; i++) {
-          this.players[i].bid = 0;
-          this.players[i].cards = deck.slice(6 * i, 6 * (i + 1));
-          this.players[i].cards.sort(reverse);
-        }
-
-        this.dealer = ((this.dealer + 1) % PlayerCount) as PlayerIndex;
-        this.started = ((this.dealer + 1) % PlayerCount) as PlayerIndex;
-        this.played = 0;
-
-        this.trump = Suit.Invalid;
-        this.mode = Mode.Bidding;
-
-        return true;
-      }
-
-      if (this.mode === Mode.Blank) {
         this.mode = Mode.Dealing;
         return true;
       }
