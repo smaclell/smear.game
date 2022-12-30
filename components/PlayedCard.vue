@@ -36,7 +36,13 @@
         <span>{{ icon }}</span>
       </div>
       <div class="flex-auto flex items-center justify-center">
-        <span>{{ label }}</span>
+        <template v-if="/\d+/.test(label)">
+          <span>{{ label }}</span>
+        </template>
+        <template v-else>
+          <span>{{ label[0] }}</span>
+          <span class="long-name">{{ label.substring(1) }}</span>
+        </template>
       </div>
       <div class="justify-end self-end">
         <span>{{ icon }}</span>
@@ -91,11 +97,19 @@ const emit = defineEmits<{
   aspect-ratio: 2 / 3;
 }
 
+.long-name {
+  display: none;
+}
+
 @media (min-width: 640px) {
   .card {
     min-width: 54px;
     max-width: 120px;
     aspect-ratio: 9 / 16;
+  }
+
+  .long-name {
+    display: inline;
   }
 }
 </style>
