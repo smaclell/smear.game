@@ -144,6 +144,12 @@ export const useGameStore = defineStore('game', {
       this.started = starter as PlayerIndex;
       this.played = 0;
 
+      this.redPlayed = [];
+      this.bluePlayed = [];
+
+      this.redScore = 0;
+      this.blueScore = 0;
+
       this.trump = Suit.Invalid;
       this.mode = Mode.Bidding;
     },
