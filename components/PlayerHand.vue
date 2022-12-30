@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="flex flex-row flex-wrap gap-4 justify-center items-center">
+    <div
+      class="flex flex-row flex-wrap gap-2 md:gap-4 justify-center items-center"
+    >
       <template v-for="card in props.cards">
         <PlayedCard
           v-if="card !== props.played"
@@ -13,7 +15,13 @@
         />
       </template>
     </div>
-    <p :class="['text-6xl', 'text-center', { 'font-bold': active }]">
+    <p
+      :class="[
+        'text-xl md:text-3xl lg:text-6xl',
+        'text-center',
+        { 'font-bold': active },
+      ]"
+    >
       {{ name }}
       <span v-if="bid">
         {{ bid }}

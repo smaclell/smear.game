@@ -5,8 +5,10 @@
       'flex',
       'flex-col',
       'justify-between',
-      'p-3',
-      'text-4xl',
+      'p-1',
+      'lg:p-3',
+      'text-lg',
+      'lg:text-4xl',
       'border-2',
       'border-black',
       'border-solid',
@@ -89,8 +91,14 @@ const emit = defineEmits<{
 <style lang="postcss" scoped>
 .card {
   box-sizing: content-box;
-  min-width: 81px;
-  max-width: 120px;
-  aspect-ratio: 9 / 16;
+  max-width: 27px;
+  aspect-ratio: 2 / 3;
+}
+
+@media (min-width: 640px) {
+  .card {
+    max-width: 120px;
+    aspect-ratio: 9 / 16;
+  }
 }
 </style>

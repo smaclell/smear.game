@@ -99,6 +99,11 @@ import { getPerfectDeck, shuffle } from '~/CardTypes';
 export default defineComponent({
   name: 'IndexPage',
   setup() {
+    const url = new URL(location.toString());
+    const params = new URLSearchParams(url.search);
+    const debug = params.get('debug') === 'true';
+    const solo = params.get('solo') === 'true';
+
     const connections = useConnectionsStore();
     const { mode: connectionMode } = storeToRefs(connections);
     const { host, join } = connections;
@@ -115,7 +120,7 @@ export default defineComponent({
 
     let dealer: number = Math.floor(Math.random() * 4);
     function deal() {
-      if (connectionMode.value !== ConnectionMode.Host) {
+      if (connectionMode.value !== ConnectionMode.Host && !debug) {
         throw new Error('Not host');
       }
 
@@ -124,10 +129,15 @@ export default defineComponent({
       start(0, dealer % 4, deck);
     }
 
+    if (solo) {
+      deal();
+    }
+
     // @ts-ignore
     window.game = store;
 
     return {
+      debug,
       DefaultGame,
       connectionMode,
       host,
