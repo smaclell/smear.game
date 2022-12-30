@@ -22,8 +22,11 @@
         </template>
       </div>
       <div class="my-4">
-        <p :class="[red ? 'text-red-500' : 'text-black']">
-          <strong>Trump:</strong> {{ trump }} {{ emoji }}
+        <p>
+          <strong>Trump:</strong> {{ trump }}
+          <span :class="[red ? 'text-red-500' : 'text-black']">{{
+            emoji
+          }}</span>
         </p>
         <p><strong>Us:</strong> {{ redScore }}</p>
         <p><strong>Them:</strong> {{ blueScore }}</p>

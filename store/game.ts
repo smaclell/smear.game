@@ -147,8 +147,10 @@ export const useGameStore = defineStore('game', {
       this.redPlayed = [];
       this.bluePlayed = [];
 
-      this.redScore = 0;
-      this.blueScore = 0;
+      if (this.mode === Mode.Game) {
+        this.redScore = 0;
+        this.blueScore = 0;
+      }
 
       this.trump = Suit.Invalid;
       this.mode = Mode.Bidding;
