@@ -14,7 +14,9 @@
       'border-solid',
       'rounded',
       'shadow',
-      !allowed
+      hide
+        ? 'bg-slate-500'
+        : !allowed
         ? 'shadow-sm opacity-50 cursor-not-allowed'
         : ['cursor-grab', { 'shadow-md': !trump, 'shadow-lg': trump }],
       'hover:shadow-xl',
@@ -26,18 +28,20 @@
         'text-black': !red,
       },
     ]"
-    :disabled="!allowed"
-    @click="allowed && emit('click', card)"
+    :disabled="!hide && !allowed"
+    @click="!hide && allowed && emit('click', card)"
   >
-    <div class="justify-start self-start">
-      <span>{{ icon }}</span>
-    </div>
-    <div class="flex-auto flex items-center justify-center">
-      <span>{{ label }}</span>
-    </div>
-    <div class="justify-end self-end">
-      <span>{{ icon }}</span>
-    </div>
+    <template v-if="!hide">
+      <div class="justify-start self-start">
+        <span>{{ icon }}</span>
+      </div>
+      <div class="flex-auto flex items-center justify-center">
+        <span>{{ label }}</span>
+      </div>
+      <div class="justify-end self-end">
+        <span>{{ icon }}</span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -45,7 +49,7 @@
 import { computed } from 'vue';
 import { Suit, Card } from '../CardTypes';
 
-type Props = { card: Card; allowed: boolean; trump: boolean };
+type Props = { card: Card; allowed: boolean; trump: boolean; hide: boolean };
 
 const props = defineProps<Props>();
 
@@ -91,12 +95,14 @@ const emit = defineEmits<{
 <style lang="postcss" scoped>
 .card {
   box-sizing: content-box;
+  min-width: 9px;
   max-width: 27px;
   aspect-ratio: 2 / 3;
 }
 
 @media (min-width: 640px) {
   .card {
+    min-width: 54px;
     max-width: 120px;
     aspect-ratio: 9 / 16;
   }

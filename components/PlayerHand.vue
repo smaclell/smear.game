@@ -11,6 +11,7 @@
           :card="card"
           :allowed="isAllowed(card)"
           :trump="!!trump && card.suit === trump"
+          :hide="hide"
           @click="active && emit('click', props.id, card)"
         />
       </template>
@@ -41,10 +42,11 @@ type Card = { suit: Suit; value: CardValue };
 type Props = {
   id: number;
   bid: number;
-  active: Boolean;
+  active: boolean;
   name: String;
   cards: Card[];
   played: Card;
+  hide: boolean;
 };
 
 const props = defineProps<Props>();

@@ -60,25 +60,29 @@
     <PlayerHand
       class="col-span-3 col-start-1 row-start-3 self-end"
       v-bind="players[0]"
-      :active="active === 0"
+      :active="active === 0 && !ready"
+      :hide="false"
       @click="play"
     />
     <PlayerHand
       class="row-span-3 row-start-1 col-start-1 self-center"
       v-bind="players[1]"
-      :active="active === 1"
+      :active="active === 1 && !ready"
+      :hide="localId !== -1 && !debug"
       @click="play"
     />
     <PlayerHand
       class="col-span-3 col-start-1 row-start-1 self-start"
       v-bind="players[2]"
-      :active="active === 2"
+      :active="active === 2 && !ready"
+      :hide="localId !== -1 && !debug"
       @click="play"
     />
     <PlayerHand
       class="row-span-3 row-start-1 col-start-3 self-center"
       v-bind="players[3]"
-      :active="active === 3"
+      :active="active === 3 && !ready"
+      :hide="localId !== -1 && !debug"
       @click="play"
     />
   </div>
@@ -105,7 +109,7 @@ export default defineComponent({
     const solo = params.get('solo') === 'true';
 
     const connections = useConnectionsStore();
-    const { mode: connectionMode } = storeToRefs(connections);
+    const { localId, mode: connectionMode } = storeToRefs(connections);
     const { host, join } = connections;
 
     // @ts-ignore
@@ -140,6 +144,7 @@ export default defineComponent({
       debug,
       DefaultGame,
       connectionMode,
+      localId,
       host,
       join,
       players,
