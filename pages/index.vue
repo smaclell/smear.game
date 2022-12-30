@@ -1,12 +1,12 @@
 <template>
   <div class="grid grid-cols-3 grid-rows-4 h-screen">
     <div class="col-span-3 row-start-4 text-2xl">
-      <div v-if="connectionMode === 'Lobby'">
+      <div v-if="connectionMode === 'Lobby'" class="my-4">
         <strong>Connection:</strong>
         <button class="btn btn-blue" @click="host(DefaultGame)">Host</button>
         <button class="btn btn-blue" @click="join(DefaultGame)">Join</button>
       </div>
-      <div v-if="connectionMode === 'Host'">
+      <div v-if="connectionMode === 'Host'" class="my-4">
         <button
           v-if="mode === 'Dealing' || mode === 'Game'"
           class="btn btn-blue"
@@ -18,7 +18,13 @@
           Next
         </button>
       </div>
-      <div v-if="mode === 'Bidding'">
+      <div class="my-4">
+        <p><strong>Trump:</strong> {{ trump }}</p>
+        <p><strong>Mode:</strong> {{ mode }}</p>
+        <p><strong>Red:</strong> {{ redScore }}</p>
+        <p><strong>Blue:</strong> {{ blueScore }}</p>
+      </div>
+      <div v-if="mode === 'Bidding'" class="my-4">
         <strong>Bid</strong>
         <button class="btn btn-blue" @click="bid(active, 0)">Pass</button>
         <button
@@ -42,12 +48,6 @@
         >
           4
         </button>
-      </div>
-      <div>
-        <p><strong>Trump:</strong> {{ trump }}</p>
-        <p><strong>Mode:</strong> {{ mode }}</p>
-        <p><strong>Red:</strong> {{ redScore }}</p>
-        <p><strong>Blue:</strong> {{ blueScore }}</p>
       </div>
     </div>
     <PlayArea
