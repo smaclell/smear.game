@@ -65,15 +65,15 @@ export const useGameStore = defineStore('game', {
     ],
   }),
   getters: {
-    maxBid(state): [number, number] {
+    maxBid(state): [number, PlayerIndex] {
       return state.players.reduce(
         ([mb, mi], c, i) => {
           if (c.bid && mb < c.bid) {
-            return [c.bid, i];
+            return [c.bid, i as PlayerIndex];
           }
           return [mb, mi];
         },
-        [-1, 0]
+        [-1, 0 as PlayerIndex]
       );
     },
     ready: (state): boolean =>
@@ -174,10 +174,10 @@ export const useGameStore = defineStore('game', {
       }
 
       if (this.mode === Mode.Bidding) {
-        this.mode = Mode.Playing;
+        const [bid, playerId] = this.maxBid;
 
-        const bid = this.maxBid;
-        this.started = bid[1] as PlayerIndex;
+        this.mode = bid > 0 ? Mode.Playing : Mode.Dealing;
+        this.started = playerId;
         this.played = 0;
 
         return true;
