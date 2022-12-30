@@ -23,10 +23,14 @@
         { 'font-bold': active },
       ]"
     >
-      {{ name }}
-      <span v-if="bid">
+      <span v-if="active"> ⏰ </span>
+      <span>
+        {{ name }}
+      </span>
+      <span v-if="bid > 0">
         {{ bid }}
       </span>
+      <span v-else-if="bid < 0"> pass </span>
     </p>
   </div>
 </template>

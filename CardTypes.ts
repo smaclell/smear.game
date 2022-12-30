@@ -13,6 +13,17 @@ export type Card = {
   value: CardValue;
 };
 
+export const Emojis = {
+  [Suit.Invalid]: '',
+  [Suit.Hearts]: '♥️',
+  [Suit.Diamonds]: '♦️',
+  [Suit.Spades]: '♠️',
+  [Suit.Clubs]: '♣️',
+};
+
+export const isRed = (suit: Suit) =>
+  suit === Suit.Hearts || suit === Suit.Diamonds;
+
 export const Sentinel: Card = { suit: Suit.Invalid, value: 2 };
 
 const suitOrder = {

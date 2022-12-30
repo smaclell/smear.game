@@ -5,6 +5,7 @@
       class="col-start-1 row-start-1 row-end-3 left"
       :card="props.left"
       :trump="props.left?.suit === trump"
+      :hide="false"
       allowed
     />
     <PlayedCard
@@ -12,6 +13,7 @@
       class="col-start-2 top"
       :card="props.top"
       :trump="props.top?.suit === trump"
+      :hide="false"
       allowed
     />
     <PlayedCard
@@ -19,6 +21,7 @@
       class="col-start-3 row-start-1 row-end-3 right"
       :card="props.right"
       :trump="props.right?.suit === trump"
+      :hide="false"
       allowed
     />
     <PlayedCard
@@ -26,6 +29,7 @@
       class="col-start-2 row-end-3 bottom"
       :card="props.bottom"
       :trump="props.bottom?.suit === trump"
+      :hide="false"
       allowed
     />
   </div>

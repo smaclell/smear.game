@@ -47,19 +47,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Suit, Card } from '../CardTypes';
+import { Suit, Card, Emojis, isRed } from '../CardTypes';
 
 type Props = { card: Card; allowed: boolean; trump: boolean; hide: boolean };
 
 const props = defineProps<Props>();
 
-const suits = {
-  [Suit.Invalid]: '',
-  [Suit.Hearts]: '♥️',
-  [Suit.Diamonds]: '♦️',
-  [Suit.Spades]: '♠️',
-  [Suit.Clubs]: '♣️',
-};
 const lookup = [
   'invalid',
   'invalid',
@@ -79,10 +72,8 @@ const lookup = [
 ];
 
 const card = computed<Card>(() => props.card);
-const red = computed(
-  () => card.value.suit === Suit.Hearts || card.value.suit === Suit.Diamonds
-);
-const icon = computed(() => suits[card.value.suit]);
+const red = computed(() => isRed(card.value.suit));
+const icon = computed(() => Emojis[card.value.suit]);
 const label = computed(() => lookup[card.value.value]);
 
 const hidden = computed(() => card.value.suit === Suit.Invalid);

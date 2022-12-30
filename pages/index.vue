@@ -14,19 +14,23 @@
         >
           Start
         </button>
-        <button class="btn btn-blue" :disabled="!ready" @click="next">
-          Next
-        </button>
+        <template v-if="debug">
+          <p><strong>Mode:</strong> {{ mode }}</p>
+          <button class="btn btn-blue" :disabled="!ready" @click="next">
+            Next
+          </button>
+        </template>
       </div>
       <div class="my-4">
-        <p><strong>Trump:</strong> {{ trump }}</p>
-        <p><strong>Mode:</strong> {{ mode }}</p>
-        <p><strong>Red:</strong> {{ redScore }}</p>
-        <p><strong>Blue:</strong> {{ blueScore }}</p>
+        <p :class="[red ? 'text-red-500' : 'text-black']">
+          <strong>Trump:</strong> {{ trump }} {{ emoji }}
+        </p>
+        <p><strong>Us:</strong> {{ redScore }}</p>
+        <p><strong>Them:</strong> {{ blueScore }}</p>
       </div>
       <div v-if="mode === 'Bidding'" class="my-4">
         <strong>Bid</strong>
-        <button class="btn btn-blue" @click="bid(active, 0)">Pass</button>
+        <button class="btn btn-blue" @click="bid(active, -1)">Pass</button>
         <button
           class="btn btn-blue"
           :disabled="maxBid[0] >= 2"
@@ -90,7 +94,7 @@
 
 <script lang="ts">
 import { storeToRefs } from 'pinia';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import {
   ConnectionMode,
   useConnectionsStore,
@@ -98,7 +102,7 @@ import {
 } from '@/store/connections';
 import { useGameStore } from '@/store/game';
 import wait from '@/store/waiter';
-import { getPerfectDeck, shuffle } from '~/CardTypes';
+import { Emojis, getPerfectDeck, isRed, shuffle } from '~/CardTypes';
 
 export default defineComponent({
   name: 'IndexPage',
@@ -111,6 +115,9 @@ export default defineComponent({
     const connections = useConnectionsStore();
     const { localId, mode: connectionMode } = storeToRefs(connections);
     const { host, join } = connections;
+
+    const red = computed(() => isRed(trump.value));
+    const emoji = computed(() => Emojis[trump.value]);
 
     // @ts-ignore
     window.connections = connections;
@@ -151,6 +158,8 @@ export default defineComponent({
       mode,
       ready,
       active,
+      red,
+      emoji,
       trump,
       redScore,
       blueScore,

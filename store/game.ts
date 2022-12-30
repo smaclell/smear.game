@@ -327,7 +327,8 @@ export const useGameStore = defineStore('game', {
         this.redPlayed = [];
         this.bluePlayed = [];
 
-        this.mode = Mode.Dealing;
+        this.mode =
+          this.redScore < 15 && this.blueScore < 15 ? Mode.Dealing : Mode.Game;
         return true;
       }
 

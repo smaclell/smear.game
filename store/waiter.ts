@@ -21,8 +21,12 @@ export default function start(store: StoreType): void {
       return;
     }
 
-    const delay =
-      mode.value === Mode.Score || mode.value === Mode.Bidding ? 4500 : 1500;
+    let delay = 1500;
+    if (mode.value === Mode.Score || mode.value === Mode.Bidding) {
+      delay = 4500;
+    } else if (mode.value === Mode.Playing) {
+      delay = 2000;
+    }
     waiting = setTimeout(clear, delay);
   }
 
