@@ -1,21 +1,25 @@
 <template>
   <div class="grid grid-cols-3 grid-rows-4 h-screen">
-    <div class="col-span-3 row-start-4">
+    <div class="col-span-3 row-start-4 text-2xl">
       <div v-if="connectionMode === 'Lobby'">
-        <span>Connection:</span>
+        <strong>Connection:</strong>
         <button class="btn btn-blue" @click="host(DefaultGame)">Host</button>
         <button class="btn btn-blue" @click="join(DefaultGame)">Join</button>
       </div>
-      <div
-        v-if="
-          connectionMode === 'Host' && (mode === 'Dealing' || mode === 'Game')
-        "
-      >
-        <span>Connection:</span>
-        <button class="btn btn-blue" @click="deal">Start</button>
+      <div v-if="connectionMode === 'Host'">
+        <button
+          v-if="mode === 'Dealing' || mode === 'Game'"
+          class="btn btn-blue"
+          @click="deal"
+        >
+          Start
+        </button>
+        <button class="btn btn-blue" :disabled="!ready" @click="next">
+          Next
+        </button>
       </div>
       <div v-if="mode === 'Bidding'">
-        <span>Bid</span>
+        <strong>Bid</strong>
         <button class="btn btn-blue" @click="bid(active, 0)">Pass</button>
         <button
           class="btn btn-blue"
@@ -40,17 +44,10 @@
         </button>
       </div>
       <div>
-        <span>{{ mode }}</span>
-        <button class="btn btn-blue" :disabled="!ready" @click="next">
-          Next
-        </button>
-      </div>
-      <div>
-        <span><strong>Trump:</strong> {{ trump }}</span>
-        <span><strong>Active:</strong> {{ players[active].name }}</span>
-        <span><strong>Red:</strong> {{ redScore }}</span>
-        <span><strong>Blue:</strong> {{ blueScore }}</span>
-        <span><strong>Bid:</strong> {{ maxBid }}</span>
+        <p><strong>Trump:</strong> {{ trump }}</p>
+        <p><strong>Mode:</strong> {{ mode }}</p>
+        <p><strong>Red:</strong> {{ redScore }}</p>
+        <p><strong>Blue:</strong> {{ blueScore }}</p>
       </div>
     </div>
     <PlayArea
