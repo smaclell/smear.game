@@ -1,5 +1,31 @@
 # smear.game
 
+# TODO
+
+## Crucial improvements
+
+Fix the scoring
+Show the scores better
+
+## Quality of life
+
+Highlight the winning card
+prevent bidding
+jyck
+Better join order
+Test across different screen sizes
+
+## Make it pretty
+
+Celebration
+Rotation
+Movement
+
+## Because you want to
+
+Clean up the code
+Add better tests
+
 ## Build Setup
 
 ```bash
