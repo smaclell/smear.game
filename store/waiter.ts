@@ -22,7 +22,7 @@ export default function start(store: StoreType): void {
     }
 
     let delay = 1500;
-    if (mode.value === Mode.Score || mode.value === Mode.Bidding) {
+    if (mode.value === Mode.Score) {
       delay = 4500;
     } else if (mode.value === Mode.Playing) {
       delay = 2000;
