@@ -20,11 +20,30 @@ Test across different screen sizes
 Celebration
 Rotation
 Movement
+[PWA support](https://pwa.nuxtjs.org/)
 
 ## Because you want to
 
 Clean up the code
 Add better tests
+https://tailwindcss.com/docs/editor-setup
+https://github.com/tailwindlabs/prettier-plugin-tailwindcss
+
+# Inspiration
+
+PeerJS
+[Docs](https://peerjs.com/docs/)
+[Tutorial](https://www.toptal.com/webrtc/taming-webrtc-with-peerjs)
+[Repo](https://github.com/hjr265/arteegee/blob/master/public/assets/js/arteegee.js)
+
+Vue
+[TypeScript and the Composition API](https://vuejs.org/guide/typescript/composition-api.html)
+https://pinia.vuejs.org/
+
+CSS
+https://tailwindcss.com/docs/flex-basis
+https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+https://css-tricks.com/snippets/css/complete-guide-grid/
 
 ## Build Setup
 
