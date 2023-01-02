@@ -37,9 +37,9 @@ import { getDebugSettings } from '@/store/debug';
 const { debug } = getDebugSettings();
 
 const store = useGameStore();
-const { active, maxBid } = storeToRefs(store);
+const { active, ready, maxBid } = storeToRefs(store);
 const { bid } = store;
 
-const blocked = computed(() => !debug && active.value !== 0);
+const blocked = computed(() => !debug && !ready.value && active.value !== 0);
 const best = computed(() => maxBid.value[0]);
 </script>
