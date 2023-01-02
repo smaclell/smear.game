@@ -9,7 +9,7 @@ Show the scores better
 
 ## Quality of life
 
-Highlight the winning card and best while playing
+Highlight the winning card
 jyck
 Better join order
 Test across different screen sizes
