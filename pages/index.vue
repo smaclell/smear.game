@@ -31,37 +31,7 @@
         <p><strong>Us:</strong> {{ redScore }}</p>
         <p><strong>Them:</strong> {{ blueScore }}</p>
       </div>
-      <div v-if="mode === 'Bidding'" class="my-4">
-        <strong>Bid</strong>
-        <button
-          class="btn btn-blue"
-          :disabled="blockBidding"
-          @click="bid(active, -1)"
-        >
-          Pass
-        </button>
-        <button
-          class="btn btn-blue"
-          :disabled="maxBid[0] >= 2 || blockBidding"
-          @click="bid(active, 2)"
-        >
-          2
-        </button>
-        <button
-          class="btn btn-blue"
-          :disabled="maxBid[0] >= 3 || blockBidding"
-          @click="bid(active, 3)"
-        >
-          3
-        </button>
-        <button
-          class="btn btn-blue"
-          :disabled="maxBid[0] >= 4 || blockBidding"
-          @click="bid(active, 4)"
-        >
-          4
-        </button>
-      </div>
+      <BiddingControls v-if="mode === 'Bidding'" class="my-4" />
     </div>
     <PlayArea
       class="col-start-2 row-start-2"
@@ -110,32 +80,26 @@ import {
   DefaultGame,
 } from '@/store/connections';
 import { useGameStore } from '@/store/game';
+import { getDebugSettings } from '@/store/debug';
 import wait from '@/store/waiter';
 import { Emojis, getPerfectDeck, isRed, shuffle } from '~/CardTypes';
 
 export default defineComponent({
   name: 'IndexPage',
   setup() {
-    const url = new URL(location.toString());
-    const params = new URLSearchParams(url.search);
-    const debug = params.get('debug') === 'true';
-    const solo = params.get('solo') === 'true';
+    const { debug, solo } = getDebugSettings();
 
     const connections = useConnectionsStore();
     const { localId, mode: connectionMode } = storeToRefs(connections);
     const { host, join } = connections;
 
-    // @ts-ignore
-    window.connections = connections;
-
     const store = useGameStore();
-    const { players, mode, ready, active, trump, redScore, blueScore, maxBid } =
+    const { players, mode, ready, active, trump, redScore, blueScore } =
       storeToRefs(store);
     const { bid, play, next, start } = store;
 
     const red = computed(() => isRed(trump.value));
     const emoji = computed(() => Emojis[trump.value]);
-    const blockBidding = computed(() => !debug && active.value !== 0);
 
     wait(store);
 
@@ -154,9 +118,6 @@ export default defineComponent({
       deal();
     }
 
-    // @ts-ignore
-    window.game = store;
-
     return {
       debug,
       DefaultGame,
@@ -173,8 +134,6 @@ export default defineComponent({
       trump,
       redScore,
       blueScore,
-      maxBid,
-      blockBidding,
       deal,
       bid,
       play,
@@ -183,21 +142,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="postcss" scoped>
-.btn {
-  @apply font-bold py-2 px-4 rounded;
-}
-
-.btn-blue {
-  @apply bg-blue-500 text-white;
-}
-
-.btn-blue:hover {
-  @apply bg-blue-700;
-}
-
-[disabled] {
-  @apply opacity-50 cursor-not-allowed;
-}
-</style>

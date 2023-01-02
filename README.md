@@ -4,7 +4,7 @@
 
 ## Crucial improvements
 
-Fix the scoring
+Fix the scoring: low and highest should be running
 Show the scores better
 
 ## Quality of life
