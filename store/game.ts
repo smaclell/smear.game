@@ -172,9 +172,11 @@ export const useGameStore = defineStore('game', {
       if (this.mode === Mode.Bidding) {
         const [bid, playerId] = this.maxBid;
 
-        this.mode = bid > 0 ? Mode.Playing : Mode.Dealing;
-        this.started = playerId;
-        this.played = 0;
+        this.$patch({
+          mode: bid > 0 ? Mode.Playing : Mode.Dealing,
+          started: playerId,
+          played: 0,
+        });
 
         return true;
       }
