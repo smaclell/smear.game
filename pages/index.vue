@@ -13,6 +13,7 @@
       v-bind="players[0]"
       :active="active === 0 && !ready"
       :hide="false"
+      position="bottom"
       @click="play"
     />
     <PlayerHand
@@ -20,6 +21,7 @@
       v-bind="players[1]"
       :active="active === 1 && !ready"
       :hide="localId !== -1 && !debug"
+      position="left"
       @click="play"
     />
     <PlayerHand
@@ -27,6 +29,7 @@
       v-bind="players[2]"
       :active="active === 2 && !ready"
       :hide="localId !== -1 && !debug"
+      position="top"
       @click="play"
     />
     <PlayerHand
@@ -34,6 +37,7 @@
       v-bind="players[3]"
       :active="active === 3 && !ready"
       :hide="localId !== -1 && !debug"
+      position="right"
       @click="play"
     />
   </div>

@@ -16,13 +16,14 @@ Test across different screen sizes
 
 ## Make it pretty
 
+Proportions of a card
 Celebration
-Rotation
+Rotation: https://www.30secondsofcode.org/css/s/rotating-card
 Movement
-[PWA support](https://pwa.nuxtjs.org/)
 
 ## Because you want to
 
+[PWA support](https://pwa.nuxtjs.org/)
 Move the bidding difference to 'score'
 Clean up the code
 Add better tests
