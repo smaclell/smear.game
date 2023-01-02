@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import { Suit, Card, Sentinel, reverseSort } from '../CardTypes';
+import { Player, PlayerIndex } from './Player';
+import score, { PlayerScore } from './score';
 
 export enum Mode {
   Dealing = 'Dealing',
@@ -9,18 +11,7 @@ export enum Mode {
   Game = 'Game',
 }
 
-type Cards = Card[];
-
-export type Player = {
-  id: number;
-  name: string;
-  cards: Card[];
-  played: Card;
-  bid: number;
-};
-
 const PlayerCount = 4;
-export type PlayerIndex = 0 | 1 | 2 | 3;
 
 type State = {
   mode: Mode;
@@ -29,16 +20,16 @@ type State = {
   started: PlayerIndex;
   redScore: number;
   blueScore: number;
-  redPlayed: Cards;
-  bluePlayed: Cards;
   players: [Player, Player, Player, Player];
+  scores: PlayerScore[];
 };
 
-function createPlayer(id: number, name: string): Player {
+function createPlayer(id: PlayerIndex, name: string): Player {
   return {
     id,
     name,
     cards: [],
+    won: [],
     bid: 0,
     played: Sentinel,
   };
@@ -51,12 +42,11 @@ export const useGameStore = defineStore('game', {
 
     blueScore: 0,
     redScore: 0,
-    bluePlayed: [],
-    redPlayed: [],
 
     mode: Mode.Dealing,
     trump: Suit.Invalid,
 
+    scores: [],
     players: [
       createPlayer(0, 'scott'),
       createPlayer(1, 'mom'),
@@ -139,13 +129,11 @@ export const useGameStore = defineStore('game', {
         player.bid = 0;
         player.cards = deck.slice(6 * y, 6 * (y + 1));
         player.cards.sort(reverseSort);
+        player.won = [];
       }
 
       this.started = starter as PlayerIndex;
       this.played = 0;
-
-      this.redPlayed = [];
-      this.bluePlayed = [];
 
       if (this.mode === Mode.Game) {
         this.redScore = 0;
@@ -195,11 +183,13 @@ export const useGameStore = defineStore('game', {
         const hasCards = this.players[0].cards.length > 1;
         this.mode = hasCards ? Mode.Playing : Mode.Score;
 
-        let winner: PlayerIndex = this.started;
-        let winning = this.players[this.started].played;
+        let winner = this.players[this.started];
+        let winning = winner.played;
         if (!winning || winning === Sentinel) {
           throw new Error('You have not played');
         }
+
+        const all = [];
 
         for (let i = 0; i < this.players.length; i++) {
           const player = this.players[i];
@@ -213,18 +203,18 @@ export const useGameStore = defineStore('game', {
           const betterCard = winning.value < played.value;
           const isTrump = played.suit === this.trump;
           if ((betterCard && sameSuit) || (!sameSuit && isTrump)) {
-            winner = i as PlayerIndex;
+            winner = player;
             winning = played;
           }
 
-          const team = i === 0 || i === 2 ? this.redPlayed : this.bluePlayed;
-          team.push(played);
+          all.push(played);
 
           player.cards = player.cards.filter((c) => c !== played);
           player.played = Sentinel;
         }
 
-        this.started = winner;
+        winner.won.push(...all);
+        this.started = winner.id;
         this.played = 0;
         return true;
       }
@@ -234,90 +224,8 @@ export const useGameStore = defineStore('game', {
           throw new Error('There should be trump');
         }
 
-        function gamePoint(card: Card): number {
-          if (card.value < 10) {
-            return 0;
-          }
-
-          if (card.value === 10) {
-            return 10;
-          }
-
-          return card.value - 10;
-        }
-
-        function gamePoints(hand: Cards): number {
-          return hand.reduce((a, c) => a + gamePoint(c), 0);
-        }
-
-        function max(hand: Cards): Card | undefined {
-          return hand.reduce((a, c) => (a?.value < c.value ? c : a), hand[0]);
-        }
-
-        function min(hand: Cards): Card | undefined {
-          return hand.reduce((a, c) => (a?.value > c.value ? c : a), hand[0]);
-        }
-
-        function hasJack(hand: Cards): boolean {
-          return !!hand.find((c) => c.value === 11);
-        }
-
-        let red = 0;
-        let blue = 0;
-
-        const redGame = gamePoints(this.redPlayed);
-        const blueGame = gamePoints(this.bluePlayed);
-
-        if (redGame > blueGame) {
-          red++;
-        } else if (redGame < blueGame) {
-          blue++;
-        }
-
-        const redTrump = this.redPlayed.filter((c) => c.suit === this.trump);
-        const blueTrump = this.bluePlayed.filter((c) => c.suit === this.trump);
-
-        const redMax = max(redTrump);
-        const redMin = min(redTrump);
-
-        const blueMax = max(blueTrump);
-        const blueMin = min(blueTrump);
-
-        if (redMax && blueMax) {
-          if (redMax.value > blueMax.value) {
-            red++;
-          } else {
-            blue++;
-          }
-        } else if (redMax && !blueMax) {
-          red++;
-        } else if (!redMax && blueMax) {
-          blue++;
-        } else {
-          throw new Error('no Max found');
-        }
-
-        if (redMin && blueMin) {
-          if (redMin.value < blueMin.value) {
-            red++;
-          } else {
-            blue++;
-          }
-        } else if (redMin && !blueMin) {
-          red++;
-        } else if (!redMin && blueMin) {
-          blue++;
-        } else {
-          throw new Error('no Min found');
-        }
-
-        if (hasJack(redTrump)) {
-          red++;
-        }
-
-        if (hasJack(blueTrump)) {
-          blue++;
-        }
+        const result = score(this.trump, this.players);
+        let { redScore: red, blueScore: blue } = result;
 
         const [bid, player] = this.maxBid;
 
@@ -329,14 +237,16 @@ export const useGameStore = defineStore('game', {
           blue = -bid;
         }
 
-        this.redScore += red;
-        this.blueScore += blue;
+        this.$patch((state) => {
+          state.redScore += red;
+          state.blueScore += blue;
+          state.scores = result.scores;
 
-        this.redPlayed = [];
-        this.bluePlayed = [];
-
-        this.mode =
-          this.redScore < 15 && this.blueScore < 15 ? Mode.Dealing : Mode.Game;
+          state.mode =
+            state.redScore < 15 && state.blueScore < 15
+              ? Mode.Dealing
+              : Mode.Game;
+        });
         return true;
       }
 

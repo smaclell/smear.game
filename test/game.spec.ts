@@ -342,11 +342,12 @@ describe('store/game', () => {
         expect(store.players[3].cards).toEqual([]);
         expect(store.players[3].played).toBe(Sentinel);
 
-        expect(store.redPlayed).toContain(seven);
-        expect(store.redPlayed).toContain(ten);
-
-        expect(store.bluePlayed).toContain(two);
-        expect(store.bluePlayed).toContain(ace);
+        expect(store.players[0].won).toEqual([]);
+        expect(store.players[2].won).toEqual([]);
+        expect(store.players[1].won).toEqual([]);
+        expect(store.players[3].won).toEqual(
+          expect.arrayContaining([seven, ten, two, ace])
+        );
 
         expect(store.played).toEqual(0);
         expect(store.started).toEqual(3);
@@ -392,11 +393,12 @@ describe('store/game', () => {
         expect(store.players[3].cards).toEqual([]);
         expect(store.players[3].played).toBe(Sentinel);
 
-        expect(store.redPlayed).toContain(seven);
-        expect(store.redPlayed).toContain(ten);
-
-        expect(store.bluePlayed).toContain(two);
-        expect(store.bluePlayed).toContain(ace);
+        expect(store.players[0].won).toEqual(
+          expect.arrayContaining([seven, ten, two, ace])
+        );
+        expect(store.players[2].won).toEqual([]);
+        expect(store.players[1].won).toEqual([]);
+        expect(store.players[3].won).toEqual([]);
 
         expect(store.played).toEqual(0);
         expect(store.started).toEqual(0);
@@ -442,11 +444,12 @@ describe('store/game', () => {
         expect(store.players[3].cards).toEqual([]);
         expect(store.players[3].played).toBe(Sentinel);
 
-        expect(store.redPlayed).toContain(seven);
-        expect(store.redPlayed).toContain(tenSpades);
-
-        expect(store.bluePlayed).toContain(two);
-        expect(store.bluePlayed).toContain(ace);
+        expect(store.players[0].won).toEqual([]);
+        expect(store.players[1].won).toEqual([]);
+        expect(store.players[2].won).toEqual(
+          expect.arrayContaining([seven, tenSpades, two, ace])
+        );
+        expect(store.players[3].won).toEqual([]);
 
         expect(store.played).toEqual(0);
         expect(store.started).toEqual(2);
@@ -465,16 +468,13 @@ describe('store/game', () => {
         });
 
         store.players[0].bid = 3;
-        store.redPlayed = [two, six, seven, ace];
-        store.bluePlayed = [ten, jack, king, queen];
+        store.players[0].won = [two, six, seven, ace];
+        store.players[1].won = [ten, jack, king, queen];
 
         expect(store.next()).toEqual(true);
 
         expect(store.redScore).toEqual(-3);
         expect(store.blueScore).toEqual(2);
-
-        expect(store.redPlayed).toEqual([]);
-        expect(store.bluePlayed).toEqual([]);
       });
 
       it('scores played cards for a matching bid then bids again', () => {
@@ -487,16 +487,13 @@ describe('store/game', () => {
         });
 
         store.players[0].bid = 2;
-        store.redPlayed = [two, six, ace];
-        store.bluePlayed = [ten, king, queen];
+        store.players[0].won = [two, six, ace];
+        store.players[1].won = [ten, king, queen];
 
         expect(store.next()).toEqual(true);
 
         expect(store.redScore).toEqual(2);
         expect(store.blueScore).toEqual(1);
-
-        expect(store.redPlayed).toEqual([]);
-        expect(store.bluePlayed).toEqual([]);
       });
 
       it('scores played cards for a great bid then bids again', () => {
@@ -509,16 +506,13 @@ describe('store/game', () => {
         });
 
         store.players[0].bid = 3;
-        store.redPlayed = [two, jack, ace];
-        store.bluePlayed = [ten, king, queen];
+        store.players[0].won = [two, jack, ace];
+        store.players[1].won = [ten, king, queen];
 
         expect(store.next()).toEqual(true);
 
         expect(store.redScore).toEqual(3);
         expect(store.blueScore).toEqual(1);
-
-        expect(store.redPlayed).toEqual([]);
-        expect(store.bluePlayed).toEqual([]);
       });
     });
   });

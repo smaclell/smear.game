@@ -1,6 +1,7 @@
 import { Peer } from 'peerjs';
 import { defineStore } from 'pinia';
-import { PlayerIndex, useGameStore } from './game';
+import { useGameStore } from './game';
+import { PlayerIndex } from './Player';
 import { Card } from '~/CardTypes';
 
 export enum ConnectionMode {
