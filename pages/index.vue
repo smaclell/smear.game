@@ -33,24 +33,30 @@
       </div>
       <div v-if="mode === 'Bidding'" class="my-4">
         <strong>Bid</strong>
-        <button class="btn btn-blue" @click="bid(active, -1)">Pass</button>
         <button
           class="btn btn-blue"
-          :disabled="maxBid[0] >= 2"
+          :disabled="blockBidding"
+          @click="bid(active, -1)"
+        >
+          Pass
+        </button>
+        <button
+          class="btn btn-blue"
+          :disabled="maxBid[0] >= 2 || blockBidding"
           @click="bid(active, 2)"
         >
           2
         </button>
         <button
           class="btn btn-blue"
-          :disabled="maxBid[0] >= 3"
+          :disabled="maxBid[0] >= 3 || blockBidding"
           @click="bid(active, 3)"
         >
           3
         </button>
         <button
           class="btn btn-blue"
-          :disabled="maxBid[0] >= 4"
+          :disabled="maxBid[0] >= 4 || blockBidding"
           @click="bid(active, 4)"
         >
           4
@@ -119,9 +125,6 @@ export default defineComponent({
     const { localId, mode: connectionMode } = storeToRefs(connections);
     const { host, join } = connections;
 
-    const red = computed(() => isRed(trump.value));
-    const emoji = computed(() => Emojis[trump.value]);
-
     // @ts-ignore
     window.connections = connections;
 
@@ -129,6 +132,10 @@ export default defineComponent({
     const { players, mode, ready, active, trump, redScore, blueScore, maxBid } =
       storeToRefs(store);
     const { bid, play, next, start } = store;
+
+    const red = computed(() => isRed(trump.value));
+    const emoji = computed(() => Emojis[trump.value]);
+    const blockBidding = computed(() => !debug && active.value !== 0);
 
     wait(store);
 
@@ -167,6 +174,7 @@ export default defineComponent({
       redScore,
       blueScore,
       maxBid,
+      blockBidding,
       deal,
       bid,
       play,

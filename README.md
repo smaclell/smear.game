@@ -10,7 +10,6 @@ Show the scores better
 ## Quality of life
 
 Highlight the winning card
-prevent bidding
 jyck
 Better join order
 Test across different screen sizes
@@ -24,6 +23,7 @@ Movement
 
 ## Because you want to
 
+Move the bidding difference to 'score'
 Clean up the code
 Add better tests
 https://tailwindcss.com/docs/editor-setup
