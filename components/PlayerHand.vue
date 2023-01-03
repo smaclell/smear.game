@@ -2,9 +2,8 @@
   <div>
     <div
       :class="[
-        'flex flex-row flex-wrap gap-2 md:gap-4 justify-center items-center',
+        'flex flex-row gap-2 md:gap-4 justify-center items-center rotate',
         position,
-        position === 'top' || position === 'bottom' ? 'rotate' : 'straight',
       ]"
       :data-length="props.cards.length"
     >
@@ -91,7 +90,7 @@ const isAllowed = computed(() => {
 }
 
 .right {
-  transform: rotate(90deg);
+  transform: rotate(-90deg);
 }
 
 /* [data-length='2'] */
