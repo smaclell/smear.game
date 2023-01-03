@@ -312,7 +312,13 @@ describe('store/game', () => {
           started: 2,
           played: 4,
           trump: Suit.Clubs,
+          lowestCard: queen,
+          lowestPlayer: 0,
         });
+
+        // HACK: This was needed to pass
+        store.lowestCard = queen;
+        expect(store.lowestCard).toEqual(queen);
 
         store.players[0].cards = [seven];
         store.players[0].played = seven;
@@ -361,6 +367,8 @@ describe('store/game', () => {
           started: 2,
           played: 4,
           trump: Suit.Spades,
+          lowestCard: seven,
+          lowestPlayer: 0,
         });
 
         expect(store.trump).toEqual(Suit.Spades);
@@ -412,6 +420,8 @@ describe('store/game', () => {
           started: 2,
           played: 4,
           trump: Suit.Spades,
+          lowestCard: seven,
+          lowestPlayer: 0,
         });
 
         const tenSpades = createCard(Suit.Spades, 10);

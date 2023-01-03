@@ -37,7 +37,6 @@ export default function score(trump: Suit, players: Player[]): FinalScore {
     .flatMap((p) => p.won)
     .filter((c) => c.suit === trump)
     .sort(sort);
-  const lowest = all[0];
   const highest = all[all.length - 1];
 
   let redScore = 0;
@@ -52,7 +51,7 @@ export default function score(trump: Suit, players: Player[]): FinalScore {
       bid: p.bid,
       jack: !!p.won.find((c) => c.suit === trump && c.value === 11),
       highest: p.won.includes(highest),
-      lowest: p.won.includes(lowest),
+      lowest: false, // HACK: Computed in game.ts
       gamePoints: gamePoints(p.won),
     };
 

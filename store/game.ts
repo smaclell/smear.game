@@ -20,6 +20,8 @@ type State = {
   started: PlayerIndex;
   redScore: number;
   blueScore: number;
+  lowestCard: Card;
+  lowestPlayer: PlayerIndex;
   players: [Player, Player, Player, Player];
   scores: PlayerScore[];
 };
@@ -45,6 +47,8 @@ export const useGameStore = defineStore('game', {
 
     mode: Mode.Dealing,
     trump: Suit.Invalid,
+    lowestCard: Sentinel,
+    lowestPlayer: 0,
 
     scores: [],
     players: [
@@ -117,6 +121,7 @@ export const useGameStore = defineStore('game', {
 
       if (!this.trump || this.trump === Suit.Invalid) {
         this.trump = found.suit;
+        this.lowestCard = found;
       }
 
       this.played++;
@@ -142,6 +147,8 @@ export const useGameStore = defineStore('game', {
       if (this.mode === Mode.Game) {
         this.redScore = 0;
         this.blueScore = 0;
+        this.lowestCard = Sentinel;
+        this.lowestPlayer = 0;
       }
 
       this.trump = Suit.Invalid;
@@ -192,7 +199,13 @@ export const useGameStore = defineStore('game', {
         let winner = this.players[this.started];
         let winning = winner.played;
         if (!winning || winning === Sentinel) {
-          throw new Error('You have not played');
+          throw new Error('You have not played winner');
+        }
+
+        let lowest = this.lowestCard;
+        let lowestPlayer = this.lowestPlayer;
+        if (!lowest || lowest === Sentinel) {
+          throw new Error('You have not played lowest');
         }
 
         const all = [];
@@ -213,6 +226,11 @@ export const useGameStore = defineStore('game', {
             winning = played;
           }
 
+          if (played.suit === this.trump && played.value <= lowest.value) {
+            lowest = played;
+            lowestPlayer = player.id;
+          }
+
           all.push(played);
 
           player.cards = player.cards.filter((c) => c !== played);
@@ -220,6 +238,8 @@ export const useGameStore = defineStore('game', {
         }
 
         winner.won.push(...all);
+        this.lowestCard = lowest;
+        this.lowestPlayer = lowestPlayer;
         this.started = winner.id;
         this.played = 0;
         return true;
@@ -233,9 +253,17 @@ export const useGameStore = defineStore('game', {
         const result = score(this.trump, this.players);
         let { redScore: red, blueScore: blue } = result;
 
+        const { scores } = result;
+        scores[this.lowestPlayer].lowest = true;
+        if (this.lowestPlayer % 2 === 0) {
+          red++;
+        } else {
+          blue++;
+        }
+
         const [bid, player] = this.maxBid;
 
-        if (player === 0 || player === 2) {
+        if (player % 2 === 0) {
           if (red < bid) {
             red = -bid;
           }
