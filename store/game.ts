@@ -71,8 +71,12 @@ export const useGameStore = defineStore('game', {
       state.mode === Mode.Game ||
       state.mode === Mode.Dealing ||
       state.played === PlayerCount,
-    active: (state): PlayerIndex =>
-      ((state.started + state.played) % PlayerCount) as PlayerIndex,
+    active() {
+      const active = ((this.started + this.played) %
+        PlayerCount) as PlayerIndex;
+      // @ts-ignore - will be evaluated
+      return !this.ready ? active : -1;
+    },
   },
   actions: {
     bid(playerId: PlayerIndex, value: number) {

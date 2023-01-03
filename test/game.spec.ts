@@ -114,7 +114,7 @@ describe('store/game', () => {
       expect(store.players[3].bid).toEqual(4);
 
       expect(store.started).toEqual(1);
-      expect(store.active).toEqual(1);
+      expect(store.active).toEqual(-1);
       expect(store.played).toEqual(4);
 
       expect(store.ready).toEqual(true);

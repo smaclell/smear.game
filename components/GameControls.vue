@@ -5,7 +5,7 @@
       <button class="btn btn-blue" @click="host(DefaultGame)">Host</button>
       <button class="btn btn-blue" @click="join(DefaultGame)">Join</button>
     </div>
-    <div v-if="connectionMode === 'Host'" class="my-4">
+    <div v-if="debug || connectionMode === 'Host'" class="my-4">
       <button
         v-if="mode === 'Dealing' || mode === 'Game'"
         class="btn btn-blue"

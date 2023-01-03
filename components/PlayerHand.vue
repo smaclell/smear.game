@@ -1,27 +1,24 @@
 <template>
-  <div>
-    <div
-      :class="[
-        'flex flex-row gap-2 md:gap-4 justify-center items-center rotate',
-        position,
-      ]"
-      :data-length="props.cards.length"
-    >
-      <template v-for="(card, i) in props.cards">
-        <PlayedCard
-          v-if="card !== props.played"
-          :key="card.suit + card.value.toString()"
-          class="flex-grow flex-shrink-0 content-center"
-          :data-position="i"
-          :card="card"
-          :allowed="isAllowed(card)"
-          :trump="!!trump && card.suit === trump"
-          :hide="hide"
-          @click="active && emit('click', props.id, card)"
-        />
-      </template>
-    </div>
-    <PlayerLabel :name="name" :bid="bid" :active="active" />
+  <div
+    :class="[
+      'flex flex-row gap-2 md:gap-4 justify-center items-center rotate',
+      position,
+    ]"
+    :data-length="props.cards.length"
+  >
+    <template v-for="(card, i) in props.cards">
+      <PlayedCard
+        v-if="card !== props.played"
+        :key="card.suit + card.value.toString()"
+        class="flex-grow flex-shrink-0 content-center"
+        :data-position="i"
+        :card="card"
+        :allowed="isAllowed(card)"
+        :trump="!!trump && card.suit === trump"
+        :hide="hide"
+        @click="play(props.id, card)"
+      />
+    </template>
   </div>
 </template>
 
@@ -29,6 +26,7 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '@/store/game';
+import { getDebugSettings } from '@/store/debug';
 import { Suit, CardValue } from '~/CardTypes';
 
 type Card = { suit: Suit; value: CardValue };
@@ -36,21 +34,20 @@ type Card = { suit: Suit; value: CardValue };
 type Props = {
   id: number;
   bid: number;
-  active: boolean;
   name: String;
   cards: Card[];
   played: Card;
-  hide: boolean;
   position: 'top' | 'left' | 'right' | 'bottom';
 };
 
 const props = defineProps<Props>();
-const emit = defineEmits<{
-  (e: 'click', playerId: number, card: Card): void;
-}>();
 
 const store = useGameStore();
 const { trump, started, players } = storeToRefs(store);
+const { play } = store;
+
+const { debug } = getDebugSettings();
+const hide = computed(() => props.id !== 0 && !debug);
 
 const starter = computed(() => players.value[started.value]);
 const firstPlayed = computed<Card | null>(() => {

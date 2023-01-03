@@ -9,40 +9,20 @@
       :right="players[3].played"
     />
     <div class="player-0 self-end">
-      <PlayerHand
-        v-bind="players[0]"
-        :active="active === 0 && !ready"
-        :hide="false"
-        position="bottom"
-        @click="play"
-      />
+      <PlayerHand v-bind="players[0]" position="bottom" />
+      <PlayerLabel v-bind="players[0]" />
     </div>
     <div class="player-1 self-center">
-      <PlayerHand
-        v-bind="players[1]"
-        :active="active === 1 && !ready"
-        :hide="localId !== -1 && !debug"
-        position="left"
-        @click="play"
-      />
+      <PlayerHand v-bind="players[1]" position="left" />
+      <PlayerLabel v-bind="players[1]" />
     </div>
     <div class="player-2 self-start">
-      <PlayerHand
-        v-bind="players[2]"
-        :active="active === 2 && !ready"
-        :hide="localId !== -1 && !debug"
-        position="top"
-        @click="play"
-      />
+      <PlayerLabel v-bind="players[2]" />
+      <PlayerHand v-bind="players[2]" position="top" />
     </div>
     <div class="player-3 self-center">
-      <PlayerHand
-        v-bind="players[3]"
-        :active="active === 3 && !ready"
-        :hide="localId !== -1 && !debug"
-        position="right"
-        @click="play"
-      />
+      <PlayerHand v-bind="players[3]" position="right" />
+      <PlayerLabel v-bind="players[3]" />
     </div>
   </div>
 </template>
@@ -50,38 +30,19 @@
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue';
-import { useConnectionsStore, DefaultGame } from '@/store/connections';
 import { useGameStore } from '@/store/game';
-import { getDebugSettings } from '@/store/debug';
 import wait from '@/store/waiter';
 
 export default defineComponent({
   name: 'IndexPage',
   setup() {
-    const { debug } = getDebugSettings();
-
-    const connections = useConnectionsStore();
-    const { localId } = storeToRefs(connections);
-
     const store = useGameStore();
-    const { players, mode, ready, active, trump, redScore, blueScore } =
-      storeToRefs(store);
-    const { play } = store;
+    const { players } = storeToRefs(store);
 
     wait(store);
 
     return {
-      debug,
-      DefaultGame,
-      localId,
       players,
-      mode,
-      ready,
-      active,
-      trump,
-      redScore,
-      blueScore,
-      play,
     };
   },
 });
