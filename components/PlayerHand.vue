@@ -1,8 +1,10 @@
 <template>
   <div
     :class="[
-      'flex flex-row gap-2 md:gap-4 justify-center items-center rotate',
+      'flex gap-2 md:gap-4 justify-center items-center',
       position,
+      vertical ? 'flex-col' : 'flex-row',
+      vertical ? 'straight' : 'rotate',
     ]"
     :data-length="props.cards.length"
   >
@@ -49,6 +51,10 @@ const { play } = store;
 const { debug } = getDebugSettings();
 const hide = computed(() => props.id !== 0 && !debug);
 
+const vertical = computed(
+  () => props.position === 'left' || props.position === 'right'
+);
+
 const starter = computed(() => players.value[started.value]);
 const firstPlayed = computed<Card | null>(() => {
   const firstPlayed = starter.value?.played;
@@ -83,11 +89,11 @@ const isAllowed = computed(() => {
 }
 
 .left {
-  transform: rotate(90deg);
+  /* transform: rotate(90deg); */
 }
 
 .right {
-  transform: rotate(-90deg);
+  /* transform: rotate(-90deg); */
 }
 
 /* [data-length='2'] */
