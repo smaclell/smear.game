@@ -2,25 +2,28 @@
   <div class="outer-grid">
     <GameControls class="control-bar" />
 
-    <PlayArea
-      class="play-area"
-      :bottom="players[0].played"
-      :left="players[1].played"
-      :top="players[2].played"
-      :right="players[3].played"
-    />
+    <template v-if="!scores[0]">
+      <PlayArea
+        class="play-area"
+        :bottom="players[0].played"
+        :left="players[1].played"
+        :top="players[2].played"
+        :right="players[3].played"
+      />
 
-    <PlayerHand class="player-0" v-bind="players[0]" position="bottom" />
-    <PlayerLabel class="label-0" v-bind="players[0]" />
+      <PlayerHand class="player-0" v-bind="players[0]" position="bottom" />
+      <PlayerLabel class="label-0" v-bind="players[0]" />
 
-    <PlayerHand class="player-1" v-bind="players[1]" position="left" />
-    <PlayerLabel class="label-1" v-bind="players[1]" />
+      <PlayerHand class="player-1" v-bind="players[1]" position="left" />
+      <PlayerLabel class="label-1" v-bind="players[1]" />
 
-    <PlayerLabel class="label-2" v-bind="players[2]" />
-    <PlayerHand class="player-2" v-bind="players[2]" position="top" />
+      <PlayerLabel class="label-2" v-bind="players[2]" />
+      <PlayerHand class="player-2" v-bind="players[2]" position="top" />
 
-    <PlayerHand class="player-3" v-bind="players[3]" position="right" />
-    <PlayerLabel class="label-3" v-bind="players[3]" />
+      <PlayerHand class="player-3" v-bind="players[3]" position="right" />
+      <PlayerLabel class="label-3" v-bind="players[3]" />
+    </template>
+    <ScoreScreen v-else />
   </div>
 </template>
 
@@ -34,12 +37,13 @@ export default defineComponent({
   name: 'IndexPage',
   setup() {
     const store = useGameStore();
-    const { players } = storeToRefs(store);
+    const { players, scores } = storeToRefs(store);
 
     wait(store);
 
     return {
       players,
+      scores,
     };
   },
 });

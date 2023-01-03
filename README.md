@@ -2,17 +2,11 @@
 
 # TODO
 
-## Crucial improvements
-
-Fix the scoring: low and highest should be running
-Show the scores better
-
 ## Quality of life
 
-Highlight the winning card
 jyck
-Better join order
 Test across different screen sizes
+Better join order
 
 ## Make it pretty
 
@@ -20,12 +14,13 @@ Proportions of a card
 Celebration
 Rotation: https://www.30secondsofcode.org/css/s/rotating-card
 Movement
+Highlight the winning card
 
 ## Because you want to
 
 [PWA support](https://pwa.nuxtjs.org/)
-Move the bidding difference to 'score'
-Clean up the code
+Clean up the hack around score, it does not feel right
+Treat the macro states as separate pages (connecting, bidding, playing, score/game)
 Add better tests
 https://tailwindcss.com/docs/editor-setup
 https://github.com/tailwindlabs/prettier-plugin-tailwindcss

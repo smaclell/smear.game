@@ -153,6 +153,7 @@ export const useGameStore = defineStore('game', {
 
       this.trump = Suit.Invalid;
       this.mode = Mode.Bidding;
+      this.scores = [];
     },
     rotate(positions: number) {
       if (positions < 0) {
