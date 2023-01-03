@@ -6,9 +6,8 @@
       'flex-col',
       'justify-between',
       'p-1',
-      'lg:p-3',
       'text-lg',
-      'lg:text-4xl',
+      'lg:text-2xl',
       'border-2',
       'border-black',
       'border-solid',
@@ -95,7 +94,7 @@ const emit = defineEmits<{
   box-sizing: content-box;
   min-width: 9px;
   max-width: 27px;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 9 / 16;
 }
 
 .long-name {
@@ -104,9 +103,8 @@ const emit = defineEmits<{
 
 @media (min-width: 640px) {
   .card {
-    min-width: 54px;
-    max-width: 120px;
-    aspect-ratio: 9 / 16;
+    min-width: 27px;
+    max-width: 54px;
   }
 
   .long-name {

@@ -1,7 +1,7 @@
 <template>
   <p
     :class="[
-      'text-xl md:text-3xl lg:text-6xl p-2 md:p-4',
+      'text-xl md:text-2xl lg:text-3xl p-2 md:p-4',
       'text-center',
       { 'font-bold': highlight },
     ]"
