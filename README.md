@@ -4,7 +4,6 @@
 
 ## Finishing!
 
-- Add trump highlighting and hiding back in
 - jyck
 - Test across different screen sizes
 - Better join order
