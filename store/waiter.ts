@@ -17,17 +17,20 @@ export default function start(store: StoreType): void {
   }
 
   function wait() {
-    if (waiting || !ready.value || mode.value === Mode.Game) {
+    if (waiting || !ready.value) {
       return;
     }
 
-    let delay = 1500;
-    if (mode.value === Mode.Score) {
-      delay = 4500;
-    } else if (mode.value === Mode.Playing) {
+    let delay = 0;
+    if (mode.value === Mode.Playing) {
       delay = 2000;
+    } else if (mode.value === Mode.Bidding) {
+      delay = 500;
     }
-    waiting = setTimeout(clear, delay);
+
+    if (delay > 0) {
+      waiting = setTimeout(clear, delay);
+    }
   }
 
   store.$onAction(({ name, after }) => {

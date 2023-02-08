@@ -1,14 +1,20 @@
 import { defineStore } from 'pinia';
-import { Suit, Card, Sentinel, reverseSort } from '../CardTypes';
+import {
+  Suit,
+  Card,
+  Sentinel,
+  reverseSort,
+  shuffle,
+  getPerfectDeck,
+} from '../CardTypes';
 import { Player, PlayerIndex } from './Player';
-import score, { PlayerScore } from './score';
+import { useScoreStore } from './score';
 
 export enum Mode {
-  Dealing = 'Dealing',
+  Start = 'Start',
   Bidding = 'Bidding',
   Playing = 'Playing',
   Score = 'Score',
-  Game = 'Game',
 }
 
 const PlayerCount = 4;
@@ -16,14 +22,10 @@ const PlayerCount = 4;
 type State = {
   mode: Mode;
   trump: Suit;
+  dealer: PlayerIndex;
   played: PlayerIndex | 4;
   started: PlayerIndex;
-  redScore: number;
-  blueScore: number;
-  lowestCard: Card;
-  lowestPlayer: PlayerIndex;
   players: [Player, Player, Player, Player];
-  scores: PlayerScore[];
 };
 
 function createPlayer(id: PlayerIndex, name: string): Player {
@@ -31,7 +33,6 @@ function createPlayer(id: PlayerIndex, name: string): Player {
     id,
     name,
     cards: [],
-    won: [],
     bid: 0,
     played: Sentinel,
   };
@@ -39,18 +40,13 @@ function createPlayer(id: PlayerIndex, name: string): Player {
 
 export const useGameStore = defineStore('game', {
   state: (): State => ({
+    dealer: (Math.floor(Math.random() * 4) % 4) as PlayerIndex,
     played: 0,
     started: 1,
 
-    blueScore: 0,
-    redScore: 0,
-
-    mode: Mode.Dealing,
+    mode: Mode.Start,
     trump: Suit.Invalid,
-    lowestCard: Sentinel,
-    lowestPlayer: 0,
 
-    scores: [],
     players: [
       createPlayer(0, 'scott'),
       createPlayer(1, 'mom'),
@@ -70,11 +66,7 @@ export const useGameStore = defineStore('game', {
         [-1, 0 as PlayerIndex]
       );
     },
-    ready: (state): boolean =>
-      state.mode === Mode.Score ||
-      state.mode === Mode.Game ||
-      state.mode === Mode.Dealing ||
-      state.played === PlayerCount,
+    ready: (state): boolean => state.played === PlayerCount,
     active() {
       const active = ((this.started + this.played) %
         PlayerCount) as PlayerIndex;
@@ -97,6 +89,7 @@ export const useGameStore = defineStore('game', {
 
       this.played++;
       this.players[playerId].bid = value;
+
       return true;
     },
     play(playerId: PlayerIndex, card: Card) {
@@ -121,12 +114,20 @@ export const useGameStore = defineStore('game', {
 
       if (!this.trump || this.trump === Suit.Invalid) {
         this.trump = found.suit;
-        this.lowestCard = found;
       }
 
       this.played++;
       player.played = found;
+      player.cards = player.cards.filter(
+        (c) => !(c.suit === card.suit && c.value === card.value)
+      );
       return true;
+    },
+    deal() {
+      // TODO: Can these methods be simplified?
+      this.dealer = ((this.dealer + 1) % 4) as PlayerIndex;
+      const deck = shuffle(getPerfectDeck());
+      this.start(0, this.dealer, deck);
     },
     start(offset: number, dealer: number, deck: Card[]) {
       const starter = (dealer + 1) % PlayerCount;
@@ -138,22 +139,16 @@ export const useGameStore = defineStore('game', {
         player.bid = 0;
         player.cards = deck.slice(6 * y, 6 * (y + 1));
         player.cards.sort(reverseSort);
-        player.won = [];
       }
+
+      const scores = useScoreStore();
+      scores.reset();
 
       this.started = starter as PlayerIndex;
       this.played = 0;
 
-      if (this.mode === Mode.Game) {
-        this.redScore = 0;
-        this.blueScore = 0;
-        this.lowestCard = Sentinel;
-        this.lowestPlayer = 0;
-      }
-
       this.trump = Suit.Invalid;
       this.mode = Mode.Bidding;
-      this.scores = [];
     },
     rotate(positions: number) {
       if (positions < 0) {
@@ -185,7 +180,7 @@ export const useGameStore = defineStore('game', {
         const [bid, playerId] = this.maxBid;
 
         this.$patch({
-          mode: bid > 0 ? Mode.Playing : Mode.Dealing,
+          mode: bid > 0 ? Mode.Playing : Mode.Start,
           started: playerId,
           played: 0,
         });
@@ -194,94 +189,30 @@ export const useGameStore = defineStore('game', {
       }
 
       if (this.mode === Mode.Playing) {
-        const hasCards = this.players[0].cards.length > 1;
-        this.mode = hasCards ? Mode.Playing : Mode.Score;
-
-        let winner = this.players[this.started];
-        let winning = winner.played;
-        if (!winning || winning === Sentinel) {
-          throw new Error('You have not played winner');
-        }
-
-        let lowest = this.lowestCard;
-        let lowestPlayer = this.lowestPlayer;
-        if (!lowest || lowest === Sentinel) {
-          throw new Error('You have not played lowest');
-        }
-
-        const all = [];
-
-        for (let i = 0; i < this.players.length; i++) {
-          const player = this.players[i];
-          const played = player.played;
-          if (!played || played === Sentinel) {
-            throw new Error('Not everyone has played');
-          }
-
-          // TODO: Support JYCK
-          const sameSuit = winning.suit === played.suit;
-          const betterCard = winning.value < played.value;
-          const isTrump = played.suit === this.trump;
-          if ((betterCard && sameSuit) || (!sameSuit && isTrump)) {
-            winner = player;
-            winning = played;
-          }
-
-          if (played.suit === this.trump && played.value <= lowest.value) {
-            lowest = played;
-            lowestPlayer = player.id;
-          }
-
-          all.push(played);
-
-          player.cards = player.cards.filter((c) => c !== played);
-          player.played = Sentinel;
-        }
-
-        winner.won.push(...all);
-        this.lowestCard = lowest;
-        this.lowestPlayer = lowestPlayer;
-        this.started = winner.id;
-        this.played = 0;
-        return true;
-      }
-
-      if (this.mode === Mode.Score) {
-        if (!this.trump || this.trump === Suit.Invalid) {
-          throw new Error('There should be trump');
-        }
-
-        const result = score(this.trump, this.players);
-        let { redScore: red, blueScore: blue } = result;
-
-        const { scores } = result;
-        scores[this.lowestPlayer].lowest = true;
-        if (this.lowestPlayer % 2 === 0) {
-          red++;
-        } else {
-          blue++;
-        }
-
-        const [bid, player] = this.maxBid;
-
-        if (player % 2 === 0) {
-          if (red < bid) {
-            red = -bid;
-          }
-        } else if (blue < bid) {
-          blue = -bid;
-        }
-
         this.$patch((state) => {
-          state.redScore += red;
-          state.blueScore += blue;
-          state.scores = result.scores;
+          const scores = useScoreStore();
 
-          state.mode =
-            state.redScore < 15 && state.blueScore < 15
-              ? Mode.Dealing
-              : Mode.Game;
+          const played = [];
+          for (const player of state.players) {
+            played.push(player.played);
+            player.played = Sentinel;
+          }
+
+          const winner = scores.add(state.started, state.trump, played);
+          state.started = winner;
+          state.played = 0;
+
+          const hasCards = state.players[0].cards.length > 0;
+          state.mode = hasCards ? Mode.Playing : Mode.Score;
+          if (!hasCards) {
+            const scores = useScoreStore();
+            scores.summarize(
+              this.trump,
+              this.players.map((p) => p.bid)
+            );
+          }
         });
+
         return true;
       }
 

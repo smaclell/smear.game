@@ -8,5 +8,4 @@ export type Player = {
   cards: Card[];
   played: Card;
   bid: number;
-  won: Card[];
 };

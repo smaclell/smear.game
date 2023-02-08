@@ -6,7 +6,7 @@
 
 - jyck
 - Test across different screen sizes
-- Better join order
+- Let players choose where to sit
 - publish it online
 
 ## Make it pretty
@@ -16,14 +16,11 @@
 - Rotation: https://www.30secondsofcode.org/css/s/rotating-card
 - Movement
 - Highlight the winning card
-- Central scores between games
 - Highlight bids
 
 ## Because you want to
 
 - [PWA support](https://pwa.nuxtjs.org/)
-- Clean up the HACK around score, it does not feel right
-- Treat the macro states as separate pages (connecting, bidding, playing, score/game)
 - Add better tests
 - https://tailwindcss.com/docs/editor-setup
 - https://github.com/tailwindlabs/prettier-plugin-tailwindcss
