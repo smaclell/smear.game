@@ -1,6 +1,6 @@
 {
   "jest.shell": "/bin/zsh",
-  "jest.jestCommandLine": "source ~/.zshrc && nvm use 18 && npm run test --",
+  "jest.jestCommandLine": "NVM_LAZY_LOAD=false && source ~/.zshrc && nvm use 16 && npm run test --",
   "tailwindCSS.experimental.configFile": "tailwind.config.js",
   "files.associations": {
     "*.css": "tailwindcss"
