@@ -1,30 +1,36 @@
 <template>
   <div>
-    <strong>Bid</strong>
-    <button class="btn btn-blue" :disabled="blocked" @click="bid(active, -1)">
-      Pass
-    </button>
-    <button
-      class="btn btn-blue"
-      :disabled="best >= 2 || blocked"
-      @click="bid(active, 2)"
-    >
-      2
-    </button>
-    <button
-      class="btn btn-blue"
-      :disabled="best >= 3 || blocked"
-      @click="bid(active, 3)"
-    >
-      3
-    </button>
-    <button
-      class="btn btn-blue"
-      :disabled="best >= 4 || blocked"
-      @click="bid(active, 4)"
-    >
-      4
-    </button>
+    <div class="text-center py-4">
+      <strong>Your turn to Bid</strong>
+    </div>
+    <div class="text-center py-4">
+      <button
+        class="btn btn-blue"
+        :disabled="best >= 2 || blocked"
+        @click="bid(active, 2)"
+      >
+        2
+      </button>
+      <button
+        class="btn btn-blue"
+        :disabled="best >= 3 || blocked"
+        @click="bid(active, 3)"
+      >
+        3
+      </button>
+      <button
+        class="btn btn-blue"
+        :disabled="best >= 4 || blocked"
+        @click="bid(active, 4)"
+      >
+        4
+      </button>
+    </div>
+    <div class="text-center py-4">
+      <button class="btn btn-blue" :disabled="blocked" @click="bid(active, -1)">
+        Pass
+      </button>
+    </div>
   </div>
 </template>
 

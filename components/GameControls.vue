@@ -28,7 +28,6 @@
       <p><strong>Us:</strong> {{ redScore }}</p>
       <p><strong>Them:</strong> {{ blueScore }}</p>
     </div>
-    <BiddingControls v-if="mode === 'Bidding'" class="my-4" />
   </div>
 </template>
 

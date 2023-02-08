@@ -17,7 +17,6 @@
 - Rotation: https://www.30secondsofcode.org/css/s/rotating-card
 - Movement
 - Highlight the winning card
-- Central bidding area
 - Central scores between games
 - Highlight bids
 

@@ -3,7 +3,9 @@
     <GameControls class="control-bar" />
 
     <template v-if="!scores[0]">
+      <BiddingControls v-if="mode === 'Bidding'" />
       <PlayArea
+        v-else
         class="play-area"
         :bottom="players[0].played"
         :left="players[1].played"
@@ -37,13 +39,14 @@ export default defineComponent({
   name: 'IndexPage',
   setup() {
     const store = useGameStore();
-    const { players, scores } = storeToRefs(store);
+    const { players, scores, mode } = storeToRefs(store);
 
     wait(store);
 
     return {
       players,
       scores,
+      mode,
     };
   },
 });
