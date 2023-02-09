@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
 import { PlayerIndex } from './Player';
-import { Card, Sentinel, Suit } from '~/CardTypes';
+import { Card, isWinner, isJyck, Sentinel, Suit } from '~/CardTypes';
 
 export interface PlayerScore {
   id: PlayerIndex;
   bid: number;
   jack: boolean;
+  jyck: boolean;
   highest: boolean;
   lowest: boolean;
   gamePoints: number;
@@ -86,7 +87,6 @@ export const useScoreStore = defineStore('score', {
       }
 
       let winner: PlayerIndex = started;
-
       let highest = cards[started];
 
       for (let i = 0; i < cards.length; i++) {
@@ -95,10 +95,7 @@ export const useScoreStore = defineStore('score', {
           throw new Error('Sentinel found');
         }
 
-        const sameSuit = highest.suit === card.suit;
-        const betterCard = highest.value < card.value;
-        const isTrump = card.suit === trump;
-        if ((betterCard && sameSuit) || (!sameSuit && isTrump)) {
+        if (isWinner(trump, card, highest)) {
           winner = i as PlayerIndex;
           highest = card;
         }
@@ -134,18 +131,27 @@ export const useScoreStore = defineStore('score', {
 
           points += gamePoint(card);
 
-          if (card.suit === trump) {
-            if (highestCard === Sentinel || highestCard.value < card.value) {
+          const jyck = isJyck(trump, card);
+          if (card.suit === trump || jyck) {
+            if (isWinner(trump, card, highestCard)) {
               highestCard = card;
               highestPlayer = i;
             }
 
-            if (lowestCard === Sentinel || lowestCard.value > card.value) {
+            if (lowestCard === Sentinel || isWinner(trump, lowestCard, card)) {
               lowestCard = card;
               lowestPlayer = i;
             }
 
-            if (card.value === 11) {
+            if (jyck) {
+              this.scores[winner].jyck = true;
+
+              if (winner % 2 === 0) {
+                red++;
+              } else {
+                blue++;
+              }
+            } else if (card.value === 11) {
               this.scores[winner].jack = true;
 
               if (winner % 2 === 0) {

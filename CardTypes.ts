@@ -21,6 +21,55 @@ export const Emojis = {
   [Suit.Clubs]: '♣️',
 };
 
+export const Offsuit = {
+  [Suit.Invalid]: Suit.Invalid,
+  [Suit.Hearts]: Suit.Diamonds,
+  [Suit.Diamonds]: Suit.Hearts,
+  [Suit.Spades]: Suit.Clubs,
+  [Suit.Clubs]: Suit.Spades,
+};
+
+export const isJyck = (trump: Suit, card: Card) =>
+  card.value === 11 && card.suit === Offsuit[trump];
+
+// TODO: This got messy trying to mix the logic from sorting and checking winners
+export const isWinner = (trump: Suit, a: Card, b: Card) => {
+  const ja = isJyck(trump, a);
+  const jb = isJyck(trump, b);
+  const ta = trump !== Suit.Invalid && (a.suit === trump || ja);
+  const tb = trump !== Suit.Invalid && (b.suit === trump || jb);
+
+  // Trumps wins if the other card is not one
+  if (ta && !tb) {
+    return true;
+  }
+
+  if (tb && !ta) {
+    return false;
+  }
+
+  const sameSuit = a.suit === b.suit;
+  const betterCard = a.value > b.value;
+
+  // Both are trump!
+  if (ta && tb) {
+    // Only a challenge if both are jacks, everything else use the card value
+    if (a.value === 11 && b.value === 11) {
+      return a.suit === trump;
+    }
+
+    return betterCard;
+  }
+
+  // Matching suits? check the values
+  if (sameSuit) {
+    return betterCard;
+  }
+
+  // If trump is set, pick the first card, when it is not set sort the cards
+  return trump !== Suit.Invalid || suitOrder[a.suit] > suitOrder[b.suit];
+};
+
 export const isRed = (suit: Suit) =>
   suit === Suit.Hearts || suit === Suit.Diamonds;
 

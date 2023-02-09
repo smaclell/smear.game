@@ -16,7 +16,7 @@
         :data-position="i"
         :card="card"
         :allowed="isAllowed(card)"
-        :trump="!!trump && card.suit === trump"
+        :trump="!!trump && (card.suit === trump || isJyck(trump, card))"
         :hide="hide"
         @click="play(props.id, card)"
       />
@@ -29,7 +29,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '@/store/game';
 import { getDebugSettings } from '@/store/debug';
-import { Suit, CardValue } from '~/CardTypes';
+import { Suit, CardValue, isJyck } from '~/CardTypes';
 
 type Card = { suit: Suit; value: CardValue };
 
@@ -69,12 +69,15 @@ const isRecommended = computed(() => {
   return (card: Card): boolean =>
     !firstPlayed.value ||
     card.suit === trump.value ||
+    isJyck(trump.value, card) ||
     firstPlayed.value.suit === card.suit;
 });
 
 const isRequired = computed(() => {
   return (card: Card): boolean =>
-    !!firstPlayed.value && firstPlayed.value.suit === card.suit;
+    !!firstPlayed.value &&
+    (firstPlayed.value.suit === card.suit ||
+      (firstPlayed.value.suit === trump.value && isJyck(trump.value, card)));
 });
 
 const isAllowed = computed(() => {

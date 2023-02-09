@@ -4,7 +4,6 @@
 
 ## Finishing!
 
-- jyck
 - Test across different screen sizes
 - Let players choose where to sit
 - publish it online
