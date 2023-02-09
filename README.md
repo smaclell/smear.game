@@ -5,7 +5,6 @@
 ## Finishing!
 
 - Test across different screen sizes
-- publish it online
 
 ## Make it pretty
 
