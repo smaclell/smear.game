@@ -10,7 +10,6 @@
   >
     <template v-for="(card, i) in props.cards">
       <PlayedCard
-        v-if="card !== props.played"
         :key="card.suit + card.value.toString()"
         class="flex-grow flex-shrink-0 content-center"
         :data-position="i"
