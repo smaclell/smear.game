@@ -4,7 +4,7 @@
       v-if="props.left && props.left !== sentinel"
       class="col-start-1 row-start-1 row-end-3 left"
       :card="props.left"
-      :trump="props.left?.suit === trump"
+      :trump="isTrump(trump, props.left)"
       :hide="false"
       allowed
     />
@@ -12,7 +12,7 @@
       v-if="props.top && props.top !== sentinel"
       class="col-start-2 top"
       :card="props.top"
-      :trump="props.top?.suit === trump"
+      :trump="isTrump(trump, props.top)"
       :hide="false"
       allowed
     />
@@ -20,7 +20,7 @@
       v-if="props.right && props.right !== sentinel"
       class="col-start-3 row-start-1 row-end-3 right"
       :card="props.right"
-      :trump="props.right?.suit === trump"
+      :trump="isTrump(trump, props.right)"
       :hide="false"
       allowed
     />
@@ -28,7 +28,7 @@
       v-if="props.bottom && props.bottom !== sentinel"
       class="col-start-2 row-end-3 bottom"
       :card="props.bottom"
-      :trump="props.bottom?.suit === trump"
+      :trump="isTrump(trump, props.bottom)"
       :hide="false"
       allowed
     />
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '~/store/game';
-import { Card, Sentinel } from '~/CardTypes';
+import { Card, isTrump, Sentinel } from '~/CardTypes';
 
 type Props = {
   left?: Card;

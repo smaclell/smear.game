@@ -29,15 +29,21 @@ export const Offsuit = {
   [Suit.Clubs]: Suit.Spades,
 };
 
+export const isTrump = (trump: Suit, card: Card | undefined) => {
+  return (
+    trump !== Suit.Invalid &&
+    card &&
+    (card.suit === trump || isJyck(trump, card))
+  );
+};
+
 export const isJyck = (trump: Suit, card: Card) =>
   card.value === 11 && card.suit === Offsuit[trump];
 
 // TODO: This got messy trying to mix the logic from sorting and checking winners
 export const isWinner = (trump: Suit, a: Card, b: Card) => {
-  const ja = isJyck(trump, a);
-  const jb = isJyck(trump, b);
-  const ta = trump !== Suit.Invalid && (a.suit === trump || ja);
-  const tb = trump !== Suit.Invalid && (b.suit === trump || jb);
+  const ta = isTrump(trump, a);
+  const tb = isTrump(trump, b);
 
   // Trumps wins if the other card is not one
   if (ta && !tb) {
