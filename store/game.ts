@@ -28,10 +28,10 @@ type State = {
   players: [Player, Player, Player, Player];
 };
 
-function createPlayer(id: PlayerIndex, name: string): Player {
+function createPlayer(id: PlayerIndex): Player {
   return {
     id,
-    name,
+    name: '',
     cards: [],
     bid: 0,
     played: Sentinel,
@@ -48,10 +48,10 @@ export const useGameStore = defineStore('game', {
     trump: Suit.Invalid,
 
     players: [
-      createPlayer(0, 'scott'),
-      createPlayer(1, 'mom'),
-      createPlayer(2, 'dad'),
-      createPlayer(3, 'ange'),
+      createPlayer(0),
+      createPlayer(1),
+      createPlayer(2),
+      createPlayer(3),
     ],
   }),
   getters: {
@@ -150,26 +150,21 @@ export const useGameStore = defineStore('game', {
       this.trump = Suit.Invalid;
       this.mode = Mode.Bidding;
     },
-    rotate(positions: number) {
-      if (positions < 0) {
-        throw new Error('Cannot be less than zero');
+    order(offset: -1 | PlayerIndex, names: [string, string, string, string]) {
+      if (this.mode !== Mode.Start) {
+        throw new Error('Can only order while starting');
       }
 
-      if (positions === 0) {
-        return;
+      if (offset === -1) {
+        offset = 2;
       }
 
-      const player = this.players.shift();
-      if (!player) {
-        throw new Error('There should always be a player');
-      }
-
-      this.players.push(player);
-      this.players.forEach((p, i) => {
-        p.id = i as PlayerIndex;
+      this.$patch((state) => {
+        for (let i = 0; i < names.length; i++) {
+          const translate = (i + (4 - offset)) % 4;
+          state.players[translate].name = names[i];
+        }
       });
-
-      this.rotate(positions - 1);
     },
     next() {
       if (!this.ready) {

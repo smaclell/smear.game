@@ -69,6 +69,52 @@ describe('store/game', () => {
     );
   });
 
+  describe('order', () => {
+    it('handles no offset and a full game', () => {
+      const store = useGameStore();
+
+      store.order(-1, ['a', 'b', 'c', 'd']);
+
+      expect(store.players[2].name).toEqual('a');
+      expect(store.players[3].name).toEqual('b');
+      expect(store.players[0].name).toEqual('c');
+      expect(store.players[1].name).toEqual('d');
+    });
+
+    it('handles just the host and you', () => {
+      const store = useGameStore();
+
+      store.order(1, ['a', 'b', '', '']);
+
+      expect(store.players[3].name).toEqual('a');
+      expect(store.players[0].name).toEqual('b');
+      expect(store.players[1].name).toEqual('');
+      expect(store.players[2].name).toEqual('');
+    });
+
+    it('handles gaps', () => {
+      const store = useGameStore();
+
+      store.order(2, ['a', '', 'b', '']);
+
+      expect(store.players[2].name).toEqual('a');
+      expect(store.players[3].name).toEqual('');
+      expect(store.players[0].name).toEqual('b');
+      expect(store.players[1].name).toEqual('');
+    });
+
+    it('handles last place', () => {
+      const store = useGameStore();
+
+      store.order(3, ['a', '', 'c', 'b']);
+
+      expect(store.players[1].name).toEqual('a');
+      expect(store.players[2].name).toEqual('');
+      expect(store.players[3].name).toEqual('c');
+      expect(store.players[0].name).toEqual('b');
+    });
+  });
+
   describe('bidding', () => {
     function setup() {
       const store = useGameStore();

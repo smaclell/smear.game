@@ -5,7 +5,6 @@
 ## Finishing!
 
 - Test across different screen sizes
-- Let players choose where to sit
 - publish it online
 
 ## Make it pretty
@@ -20,7 +19,7 @@
 ## Because you want to
 
 - [PWA support](https://pwa.nuxtjs.org/)
-- Add better tests
+- Add better tests (connections, etc.)
 - https://tailwindcss.com/docs/editor-setup
 - https://github.com/tailwindlabs/prettier-plugin-tailwindcss
 

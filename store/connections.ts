@@ -29,15 +29,24 @@ const fakeConnnection: ISender = {
 
 type State = {
   mode: ConnectionMode;
+  name: string;
   gameId: string;
   localId: -1 | 0 | 1 | 2 | 3;
   sender: Send;
   unsubscribe: Unsubscribe;
 };
 
-interface WelcomeMessage {
-  action: 'welcome';
-  payload: number;
+interface OrderMessage {
+  action: 'order';
+  payload: [string, string, string, string];
+}
+
+interface RequestMessage {
+  action: 'request';
+  payload: {
+    name: string;
+    position: 0 | 1 | 2 | 3;
+  };
 }
 
 interface StartMessage {
@@ -60,7 +69,12 @@ interface PlayMessage {
   payload: Card;
 }
 
-type Payloads = WelcomeMessage | StartMessage | BidMessage | PlayMessage;
+type Payloads =
+  | RequestMessage
+  | OrderMessage
+  | StartMessage
+  | BidMessage
+  | PlayMessage;
 
 export const DefaultGame = 'smear-game-turkey-taco-butterfly';
 
@@ -68,7 +82,8 @@ export const useConnectionsStore = defineStore('connections', {
   state: (): State => ({
     mode: ConnectionMode.Lobby,
     localId: -1,
-    gameId: 'unknown',
+    name: '',
+    gameId: '',
     sender: sentinel,
     unsubscribe: sentinel,
   }),
@@ -101,12 +116,20 @@ export const useConnectionsStore = defineStore('connections', {
       });
 
       peer.on('connection', (conn) => {
-        const position = connections.push(conn);
+        connections.push(conn);
 
         conn.on('open', () => {
-          conn.send(
-            JSON.stringify({ action: 'welcome', payload: position - 1 })
-          );
+          const game = useGameStore();
+
+          const payload = game.players.map((p) => p.name) as [
+            string,
+            string,
+            string,
+            string
+          ];
+          const message: OrderMessage = { action: 'order', payload };
+
+          this.send(message);
         });
 
         conn.on('data', (d) => {
@@ -126,7 +149,7 @@ export const useConnectionsStore = defineStore('connections', {
     },
     join(gameId: string) {
       if (this.mode !== ConnectionMode.Lobby) {
-        throw new Error('You can only become the host from the lobby');
+        throw new Error('You can only join from the lobby');
       }
 
       const peer = new Peer();
@@ -165,6 +188,15 @@ export const useConnectionsStore = defineStore('connections', {
 
       peer.on('error', (e) => console.error(e));
     },
+    request(position: PlayerIndex) {
+      this.send({
+        action: 'request',
+        payload: {
+          name: this.name,
+          position,
+        },
+      });
+    },
     disconnect() {
       this.unsubscribe();
 
@@ -179,10 +211,37 @@ export const useConnectionsStore = defineStore('connections', {
       // eslint-disable-next-line no-console
       console.log('received', data);
       const game = useGameStore();
-      if (data.action === 'welcome') {
+      if (data.action === 'order') {
         // @ts-ignore - it is fine
-        this.localId = data.payload;
-        game.rotate(this.localId);
+        this.localId = data.payload.indexOf(this.name);
+        game.order(0, data.payload);
+      } else if (
+        data.action === 'request' &&
+        this.mode === ConnectionMode.Host
+      ) {
+        const { name, position } = data.payload;
+        const payload: [string, string, string, string] = ['', '', '', ''];
+        game.$patch((state) => {
+          const players = state.players;
+          for (let i = 0; i < players.length; i++) {
+            const player = players[i];
+            if (player.name === name) {
+              player.name = '';
+            } else if (i === position) {
+              player.name = name;
+            }
+
+            payload[i] = player.name;
+          }
+        });
+
+        const message: OrderMessage = {
+          action: 'order',
+          payload,
+        };
+
+        this.send(message);
+        this.receive(message);
       } else if (data.action === 'bid') {
         if (data.playerId === this.localId) {
           return;
@@ -199,6 +258,14 @@ export const useConnectionsStore = defineStore('connections', {
 
         game.play(playerId as PlayerIndex, data.payload);
       } else if (data.action === 'start' && this.mode !== ConnectionMode.Host) {
+        const names = game.players.map((p) => p.name) as [
+          string,
+          string,
+          string,
+          string
+        ];
+        game.order(this.localId, names);
+
         const playerId = this.translate(data.payload.dealer);
         game.start(this.localId, playerId, data.payload.deck);
       }
