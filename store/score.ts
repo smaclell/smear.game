@@ -95,7 +95,7 @@ export const useScoreStore = defineStore('score', {
           throw new Error('Sentinel found');
         }
 
-        if (isWinner(trump, card, highest)) {
+        if (!isWinner(trump, highest, card)) {
           winner = i as PlayerIndex;
           highest = card;
         }
