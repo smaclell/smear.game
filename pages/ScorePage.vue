@@ -41,7 +41,7 @@
       <p v-if="score.lowest">Won Low</p>
     </div>
 
-    <StartButton class="m-4" />
+    <StartButton class="my-4 mx-2" />
   </div>
 </template>
 
