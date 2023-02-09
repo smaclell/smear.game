@@ -33,7 +33,7 @@ import { useGameStore } from '@/store/game';
 import wait from '@/store/waiter';
 
 export default defineComponent({
-  name: 'GamePage',
+  name: 'GameScreen',
   setup() {
     const game = useGameStore();
     const { players, mode } = storeToRefs(game);

@@ -52,7 +52,7 @@ import { useGameStore } from '@/store/game';
 import { useScoreStore } from '@/store/score';
 
 export default defineComponent({
-  name: 'ScorePage',
+  name: 'ScoreScreen',
   setup() {
     const game = useGameStore();
     const { players } = storeToRefs(game);

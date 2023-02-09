@@ -1,24 +1,24 @@
 <template>
-  <LobbyPage v-if="showLobby" />
-  <ScorePage v-else-if="showScore" />
-  <GamePage v-else />
+  <LobbyScreen v-if="showLobby" />
+  <ScoreScreen v-else-if="showScore" />
+  <GameScreen v-else />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
-import GamePage from './GamePage.vue';
-import LobbyPage from './LobbyPage.vue';
-import ScorePage from './ScorePage.vue';
+import GameScreen from '@/screens/GameScreen.vue';
+import LobbyScreen from '@/screens/LobbyScreen.vue';
+import ScoreScreen from '@/screens/ScoreScreen.vue';
 import { Mode, useGameStore } from '@/store/game';
 import { getDebugSettings } from '@/store/debug';
 
 export default defineComponent({
   name: 'IndexPage',
   components: {
-    GamePage,
-    LobbyPage,
-    ScorePage,
+    GameScreen,
+    LobbyScreen,
+    ScoreScreen,
   },
   setup() {
     const game = useGameStore();

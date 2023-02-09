@@ -70,7 +70,7 @@ import { getDebugSettings } from '~/store/debug';
 import { useGameStore } from '@/store/game';
 
 export default defineComponent({
-  name: 'LobbyPage',
+  name: 'LobbyScreen',
   setup() {
     const connections = useConnectionsStore();
     const { mode, name, localId } = storeToRefs(connections);
