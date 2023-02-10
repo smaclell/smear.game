@@ -1,26 +1,18 @@
+import { Meta, StoryFn } from '@storybook/vue';
 import BiddingControls from './BiddingControls.vue';
 
 export default {
   title: 'BiddingControls',
   component: BiddingControls,
-};
+} as Meta<typeof BiddingControls>;
 
-type Props = {
-  show: boolean;
-  best: number;
-  winner: string;
-};
-
-const Template = (args: Props) => ({
+const Template: StoryFn<typeof BiddingControls> = (_, { argTypes }) => ({
   components: { BiddingControls },
-  setup() {
-    return { args };
-  },
-  template: '<BiddingControls v-bind="args" :bid="() => {}" />',
+  props: Object.keys(argTypes),
+  template: '<BiddingControls v-bind="$props" :bid="() => {}" />',
 });
 
 export const NoBids = Template.bind({});
-// @ts-ignore - storybook wants this
 NoBids.args = {
   show: false,
   best: -1,
@@ -28,7 +20,6 @@ NoBids.args = {
 };
 
 export const FirstBid = Template.bind({});
-// @ts-ignore - storybook wants this
 FirstBid.args = {
   show: true,
   best: -1,
@@ -36,7 +27,6 @@ FirstBid.args = {
 };
 
 export const LaterBid = Template.bind({});
-// @ts-ignore - storybook wants this
 LaterBid.args = {
   show: true,
   best: 3,
@@ -44,7 +34,6 @@ LaterBid.args = {
 };
 
 export const Waiting = Template.bind({});
-// @ts-ignore - storybook wants this
 Waiting.args = {
   show: false,
   best: 3,
