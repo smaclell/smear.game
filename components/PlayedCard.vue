@@ -12,10 +12,9 @@
       'border-black',
       'border-solid',
       'rounded',
-      'shadow',
       'bg-white',
       hide
-        ? 'bg-slate-500'
+        ? 'shadow bg-slate-500'
         : !allowed
         ? 'shadow-sm opacity-50 cursor-not-allowed'
         : ['cursor-grab', { 'shadow-md': !trump, 'shadow-lg': trump }],
