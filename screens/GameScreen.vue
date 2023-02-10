@@ -1,14 +1,14 @@
 <template>
   <div class="outer-grid">
-    <BiddingControls v-if="mode === 'Bidding'" />
     <PlayArea
-      v-else
+      v-if="mode === 'Playing'"
       class="play-area"
       :bottom="players[0].played"
       :left="players[1].played"
       :top="players[2].played"
       :right="players[3].played"
     />
+    <BiddingControls v-esle-if="mode === 'Bidding' && ready" v-bind="bidding" />
 
     <PlayerHand class="player-0" v-bind="players[0]" position="bottom" />
     <PlayerLabel class="label-0" v-bind="players[0]" />
@@ -28,21 +28,36 @@
 
 <script lang="ts">
 import { storeToRefs } from 'pinia';
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useGameStore } from '@/store/game';
+import { getDebugSettings } from '@/store/debug';
 import wait from '@/store/waiter';
 
 export default defineComponent({
   name: 'GameScreen',
   setup() {
     const game = useGameStore();
-    const { players, mode } = storeToRefs(game);
+    const { active, ready, players, mode, maxBid } = storeToRefs(game);
+    const { bid } = game;
+
+    const { debug } = getDebugSettings();
 
     wait(game);
 
     return {
+      ready,
       players,
       mode,
+      bidding: {
+        show: () => debug || active.value === 0,
+        best: computed(() => maxBid.value[0]),
+        winning: computed(() =>
+          maxBid.value[1] in players.value
+            ? players.value[maxBid.value[1]]
+            : null
+        ),
+        bid: (value: number) => active.value !== -1 && bid(active.value, value),
+      },
     };
   },
 });

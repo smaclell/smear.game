@@ -8,28 +8,28 @@
     <div v-if="show" class="text-center py-4">
       <button
         class="btn btn-blue"
-        :disabled="best >= 2 || blocked"
-        @click="bid(active, 2)"
+        :disabled="best >= 2 || !show"
+        @click="bid(2)"
       >
         2
       </button>
       <button
         class="btn btn-blue"
-        :disabled="best >= 3 || blocked"
-        @click="bid(active, 3)"
+        :disabled="best >= 3 || !show"
+        @click="bid(3)"
       >
         3
       </button>
       <button
         class="btn btn-blue"
-        :disabled="best >= 4 || blocked"
-        @click="bid(active, 4)"
+        :disabled="best >= 4 || !show"
+        @click="bid(4)"
       >
         4
       </button>
     </div>
     <div v-if="show" class="text-center py-4">
-      <button class="btn btn-blue" :disabled="blocked" @click="bid(active, -1)">
+      <button class="btn btn-blue" :disabled="!show" @click="bid(-1)">
         Pass
       </button>
     </div>
@@ -37,26 +37,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useGameStore } from '@/store/game';
-import { getDebugSettings } from '@/store/debug';
+type Props = {
+  show: boolean;
+  best: number;
+  winner: string;
+  bid: (value: number) => void;
+};
 
-const { debug } = getDebugSettings();
-
-const store = useGameStore();
-const { active, ready, players, maxBid } = storeToRefs(store);
-const { bid } = store;
-
-const show = computed(() => debug || active.value === 0);
-const blocked = computed(() => !debug && !ready.value && !show.value);
-const best = computed(() => maxBid.value[0]);
-const winner = computed(() => {
-  const max = maxBid.value[1];
-  if (best.value <= 0 || max < 0 || max >= players.value.length) {
-    return null;
-  }
-
-  return players.value[max].name;
-});
+defineProps<Props>();
 </script>
