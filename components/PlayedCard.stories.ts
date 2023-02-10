@@ -23,7 +23,6 @@ Default.args = {
   card: Queen,
   allowed: true,
   trump: false,
-  hide: false,
 };
 
 export const Trump = Template.bind({});
@@ -31,7 +30,6 @@ Trump.args = {
   card: Ace,
   allowed: true,
   trump: true,
-  hide: false,
 };
 
 export const Blocked = Template.bind({});
@@ -39,7 +37,6 @@ Blocked.args = {
   card: Ten,
   allowed: false,
   trump: false,
-  hide: false,
 };
 
 export const Low = Template.bind({});
@@ -47,13 +44,4 @@ Low.args = {
   card: Two,
   allowed: true,
   trump: true,
-  hide: false,
-};
-
-export const Hidden = Template.bind({});
-Hidden.args = {
-  card: Two,
-  allowed: false,
-  trump: false,
-  hide: true,
 };

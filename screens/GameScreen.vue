@@ -3,6 +3,7 @@
     <PlayArea
       v-if="mode === 'Playing'"
       class="play-area"
+      :trump="trump"
       :bottom="players[0].played"
       :left="players[1].played"
       :top="players[2].played"

@@ -1,57 +1,45 @@
 <template>
   <div class="grid grid-cols-3 grid-rows-2 gap-8 place-items-center">
     <PlayedCard
-      v-if="props.left && props.left !== sentinel"
+      v-if="left && left !== sentinel"
       class="col-start-1 row-start-1 row-end-3 left"
-      :card="props.left"
-      :trump="isTrump(trump, props.left)"
-      :hide="false"
-      allowed
+      :card="left"
+      :trump="trump"
     />
     <PlayedCard
-      v-if="props.top && props.top !== sentinel"
+      v-if="top && top !== sentinel"
       class="col-start-2 top"
-      :card="props.top"
-      :trump="isTrump(trump, props.top)"
-      :hide="false"
-      allowed
+      :card="top"
+      :trump="trump"
     />
     <PlayedCard
-      v-if="props.right && props.right !== sentinel"
+      v-if="right && right !== sentinel"
       class="col-start-3 row-start-1 row-end-3 right"
-      :card="props.right"
-      :trump="isTrump(trump, props.right)"
-      :hide="false"
-      allowed
+      :card="right"
+      :trump="trump"
     />
     <PlayedCard
-      v-if="props.bottom && props.bottom !== sentinel"
+      v-if="bottom && bottom !== sentinel"
       class="col-start-2 row-end-3 bottom"
-      :card="props.bottom"
-      :trump="isTrump(trump, props.bottom)"
-      :hide="false"
-      allowed
+      :card="bottom"
+      :trump="trump"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useGameStore } from '~/store/game';
-import { Card, isTrump, Sentinel } from '~/CardTypes';
+import { Card, Suit, Sentinel } from '~/CardTypes';
 
 type Props = {
+  trump: Suit;
   left?: Card;
   top?: Card;
   right?: Card;
   bottom?: Card;
 };
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const sentinel = Sentinel;
-
-const store = useGameStore();
-const { trump } = storeToRefs(store);
 </script>
 
 <style lang="postcss" scoped>

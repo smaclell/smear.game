@@ -1,62 +1,51 @@
 <template>
-  <div
+  <BaseCard
     :class="[
-      'card',
       'flex',
       'flex-col',
       'justify-between',
-      'p-1',
-      'text-lg',
-      'lg:text-2xl',
-      'border-2',
-      'border-black',
-      'border-solid',
-      'rounded',
-      'bg-white',
-      hide
-        ? 'shadow bg-slate-500'
-        : !allowed
-        ? 'shadow-sm opacity-50 cursor-not-allowed'
-        : ['cursor-grab', { 'shadow-md': !trump, 'shadow-lg': trump }],
-      'hover:shadow-xl',
       {
-        flip: false,
-        hidden,
-        'bg-amber-50': trump,
+        'bg-amber-50': highlight,
+        'bg-white': !highlight,
         'text-red-500': red,
         'text-black': !red,
       },
     ]"
-    :disabled="!hide && !allowed"
-    @click="!hide && allowed && emit('click', card)"
+    :disabled="!allowed"
+    @click="allowed && emit('click', card)"
   >
-    <template v-if="!hide">
-      <div class="justify-start self-start">
-        <span>{{ icon }}</span>
-      </div>
-      <div class="flex-auto flex items-center justify-center">
-        <template v-if="/\d+/.test(label)">
-          <span>{{ label }}</span>
-        </template>
-        <template v-else>
-          <span>{{ label[0] }}</span>
-          <span class="long-name">{{ label.substring(1) }}</span>
-        </template>
-      </div>
-      <div class="justify-end self-end">
-        <span>{{ icon }}</span>
-      </div>
-    </template>
-  </div>
+    <div class="justify-start self-start">
+      <span>{{ icon }}</span>
+    </div>
+    <div class="flex-auto flex items-center justify-center">
+      <template v-if="/\d+/.test(label)">
+        <span>{{ label }}</span>
+      </template>
+      <template v-else>
+        <span>{{ label[0] }}</span>
+        <span class="long-name">{{ label.substring(1) }}</span>
+      </template>
+    </div>
+    <div class="justify-end self-end">
+      <span>{{ icon }}</span>
+    </div>
+  </BaseCard>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Suit, Card, Emojis, isRed } from '../CardTypes';
+import { Card, Suit, Emojis, isRed, isTrump } from '../CardTypes';
 
-type Props = { card: Card; allowed: boolean; trump: boolean; hide: boolean };
+interface Props {
+  card: Card;
+  allowed: boolean;
+  trump: Suit;
+}
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  allowed: true,
+  trump: Suit.Invalid,
+});
 
 const lookup = [
   'invalid',
@@ -77,11 +66,11 @@ const lookup = [
 ];
 
 const card = computed<Card>(() => props.card);
+const trump = computed<Suit>(() => props.trump);
 const red = computed(() => isRed(card.value.suit));
+const highlight = computed(() => isTrump(trump.value, card.value));
 const icon = computed(() => Emojis[card.value.suit]);
 const label = computed(() => lookup[card.value.value]);
-
-const hidden = computed(() => card.value.suit === Suit.Invalid);
 
 const emit = defineEmits<{
   (e: 'click', card: Card): void;
@@ -89,23 +78,11 @@ const emit = defineEmits<{
 </script>
 
 <style lang="postcss" scoped>
-.card {
-  box-sizing: content-box;
-  min-width: 9px;
-  max-width: 27px;
-  aspect-ratio: 9 / 16;
-}
-
 .long-name {
   display: none;
 }
 
 @media (min-width: 640px) {
-  .card {
-    min-width: 27px;
-    max-width: 54px;
-  }
-
   .long-name {
     display: inline;
   }

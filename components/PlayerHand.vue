@@ -15,8 +15,7 @@
         :data-position="i"
         :card="card"
         :allowed="isAllowed(card)"
-        :trump="!hide && isTrump(trump, card)"
-        :hide="hide"
+        :trump="trump"
         @click="play(props.id, card)"
       />
     </template>
@@ -27,7 +26,6 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '@/store/game';
-import { getDebugSettings } from '@/store/debug';
 import { Suit, CardValue, isJyck, isTrump } from '~/CardTypes';
 
 type Card = { suit: Suit; value: CardValue };
@@ -46,9 +44,6 @@ const props = defineProps<Props>();
 const store = useGameStore();
 const { trump, started, players } = storeToRefs(store);
 const { play } = store;
-
-const { debug } = getDebugSettings();
-const hide = computed(() => props.id !== 0 && !debug);
 
 const vertical = computed(
   () => props.position === 'left' || props.position === 'right'
