@@ -26,7 +26,7 @@
     <PlayerLabel class="label-3" v-bind="players[3]" />
 
     <GameControls
-      v-if="mode === 'Playing' && trump !== 'Invalid'"
+      v-if="mode === 'Playing'"
       class="control-bar"
       :trump="trump"
       :red-score="redScore"

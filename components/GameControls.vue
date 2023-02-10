@@ -1,14 +1,14 @@
 <template>
   <div class="text-2xl">
     <div class="my-4">
-      <p>
+      <p><strong>Us:</strong> {{ redScore }}</p>
+      <p><strong>Them:</strong> {{ blueScore }}</p>
+      <p v-if="trump !== 'Invalid'">
         <strong>Trump:</strong> {{ trump }}
         <span :class="[isRed(trump) ? 'text-red-500' : 'text-black']">{{
           Emojis[trump]
         }}</span>
       </p>
-      <p><strong>Us:</strong> {{ redScore }}</p>
-      <p><strong>Them:</strong> {{ blueScore }}</p>
     </div>
   </div>
 </template>
