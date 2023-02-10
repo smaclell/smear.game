@@ -27,6 +27,12 @@ export default defineComponent({
 
     const { debug, solo } = getDebugSettings();
     if (debug && solo) {
+      game.$patch((state) => {
+        state.players[0].name = 'dealer';
+        state.players[1].name = 'left';
+        state.players[2].name = 'partner';
+        state.players[3].name = 'right';
+      });
       deal();
     }
 

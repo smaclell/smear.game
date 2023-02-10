@@ -8,7 +8,10 @@
       :top="players[2].played"
       :right="players[3].played"
     />
-    <BiddingControls v-esle-if="mode === 'Bidding' && ready" v-bind="bidding" />
+    <BiddingControls
+      v-else-if="mode === 'Bidding' && !ready"
+      v-bind="bidding"
+    />
 
     <PlayerHand class="player-0" v-bind="players[0]" position="bottom" />
     <PlayerLabel class="label-0" v-bind="players[0]" />
@@ -22,25 +25,35 @@
     <PlayerHand class="player-3" v-bind="players[3]" position="right" />
     <PlayerLabel class="label-3" v-bind="players[3]" />
 
-    <GameControls class="control-bar" />
+    <GameControls
+      v-if="mode === 'Playing' && trump !== 'Invalid'"
+      class="control-bar"
+      :trump="trump"
+      :red-score="redScore"
+      :blue-score="blueScore"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
-import { useGameStore } from '@/store/game';
 import { getDebugSettings } from '@/store/debug';
+import { useGameStore } from '@/store/game';
+import { useScoreStore } from '@/store/score';
 import wait from '@/store/waiter';
 
 export default defineComponent({
   name: 'GameScreen',
   setup() {
+    const { debug } = getDebugSettings();
+
     const game = useGameStore();
-    const { active, ready, players, mode, maxBid } = storeToRefs(game);
+    const { active, ready, players, mode, maxBid, trump } = storeToRefs(game);
     const { bid } = game;
 
-    const { debug } = getDebugSettings();
+    const scores = useScoreStore();
+    const { red: redScore, blue: blueScore } = storeToRefs(scores);
 
     wait(game);
 
@@ -48,6 +61,9 @@ export default defineComponent({
       ready,
       players,
       mode,
+      trump,
+      redScore,
+      blueScore,
       bidding: {
         show: () => debug || active.value === 0,
         best: computed(() => maxBid.value[0]),
