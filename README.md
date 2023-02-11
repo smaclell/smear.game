@@ -10,6 +10,7 @@
 - Movement
 - Highlight the winning card
 - Highlight bids
+- Instant lose if bid 5
 
 ## Because you want to
 
