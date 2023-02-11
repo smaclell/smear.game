@@ -34,8 +34,8 @@ defineProps<{ disabled: boolean }>();
 
 @media (min-width: 640px) {
   .card {
-    min-width: 27px;
-    max-width: 54px;
+    min-width: 64px;
+    max-width: 72px;
   }
 }
 </style>

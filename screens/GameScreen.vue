@@ -15,40 +15,40 @@
       v-bind="biddingProps"
     />
 
-    <PlayerHand
-      class="player-0"
-      v-bind="playerProps"
-      :player="players[0]"
-      position="bottom"
-    />
-    <PlayerLabel class="label-0" v-bind="players[0]" :active="active" />
+    <div class="bottom">
+      <PlayerLabel v-bind="players[0]" :active="active" />
+      <PlayerHand v-bind="playerProps" :player="players[0]" position="bottom" />
+    </div>
 
-    <component
-      :is="debug ? PlayerHand : HiddenHand"
-      class="player-1"
-      v-bind="playerProps"
-      :player="players[1]"
-      position="left"
-    />
-    <PlayerLabel class="label-1" v-bind="players[1]" :active="active" />
+    <div class="left">
+      <PlayerLabel v-bind="players[1]" :active="active" />
+      <component
+        :is="debug ? PlayerHand : HiddenHand"
+        v-bind="playerProps"
+        :player="players[1]"
+        position="bottom"
+      />
+    </div>
 
-    <component
-      :is="debug ? PlayerHand : HiddenHand"
-      class="player-2"
-      v-bind="playerProps"
-      :player="players[2]"
-      position="top"
-    />
-    <PlayerLabel class="label-2" v-bind="players[2]" :active="active" />
+    <div class="top">
+      <component
+        :is="debug ? PlayerHand : HiddenHand"
+        v-bind="playerProps"
+        :player="players[2]"
+        position="bottom"
+      />
+      <PlayerLabel v-bind="players[2]" :active="active" />
+    </div>
 
-    <component
-      :is="debug ? PlayerHand : HiddenHand"
-      class="player-3"
-      v-bind="playerProps"
-      :player="players[3]"
-      position="right"
-    />
-    <PlayerLabel class="label-3" v-bind="players[3]" :active="active" />
+    <div class="right">
+      <PlayerLabel v-bind="players[3]" :active="active" />
+      <component
+        :is="debug ? PlayerHand : HiddenHand"
+        v-bind="playerProps"
+        :player="players[3]"
+        position="bottom"
+      />
+    </div>
 
     <GameControls
       v-if="mode === 'Playing'"
@@ -124,57 +124,60 @@ export default defineComponent({
 .outer-grid {
   @apply h-screen;
 
+  margin: auto 0;
+  max-width: 720px;
   display: grid;
   grid-template:
-    ' . p2 . '
-    'p1 l2 p3'
-    'p1 pa p3'
-    'p1 p0 p3'
-    'l1 l0 l3'
+    ' . tt . '
+    'll pa rr'
+    'bb bb bb'
     'cb cb cb';
-  grid-template-columns: minmax(120px, 150px) 1fr minmax(120px, 150px);
-  grid-template-rows:
-    minmax(80px, 120px) minmax(25px, 50px) 1fr minmax(100px, 1fr)
-    minmax(25px, 50px) minmax(50px, 100px);
+  grid-template-columns: minmax(80px, 150px) minmax(240px, 1fr) minmax(
+      80px,
+      150px
+    );
+  grid-template-rows: minmax(80px, 150px) 1fr minmax(80px, 150px) minmax(
+      50px,
+      100px
+    );
 }
 
 .play-area {
   grid-area: pa;
 }
 
-.player-0 {
-  grid-area: p0;
+.top {
+  grid-area: tt;
+  transform: translateY(-40px);
 }
 
-.label-0 {
-  grid-area: l0;
-}
-
-.player-1 {
-  grid-area: p1;
-}
-
-.label-1 {
-  grid-area: l1;
-}
-
-.player-2 {
-  grid-area: p2;
-}
-
-.label-2 {
-  grid-area: l2;
-}
-
-.player-3 {
-  grid-area: p3;
-}
-
-.label-3 {
-  grid-area: l3;
+.bottom {
+  grid-area: bb;
 }
 
 .control-bar {
   grid-area: cb;
+}
+
+.left {
+  grid-area: ll;
+  align-self: center;
+  transform: rotate(90deg) translateY(30px);
+}
+
+.right {
+  grid-area: rr;
+  align-self: center;
+  transform: rotate(-90deg) translateY(30px);
+}
+
+@media (min-width: 640px) {
+  .left {
+    transform: rotate(90deg) translateY(60px);
+  }
+
+  .right {
+    transform: rotate(-90deg) translateY(60px);
+  }
 }
 </style>

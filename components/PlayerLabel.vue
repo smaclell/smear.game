@@ -1,7 +1,7 @@
 <template>
-  <p :class="['text-sm p-4 text-center', { 'font-bold': highlight }]">
+  <p :class="['text-xs p-4 text-center', { 'font-bold': highlight }]">
     <span v-if="active === id"> ⏰ </span>
-    <span class="text-lg">
+    <span class="text-sm">
       {{ name }}
     </span>
     <span v-if="bid > 0">
