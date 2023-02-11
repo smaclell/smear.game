@@ -26,14 +26,18 @@ export default defineComponent({
     const { deal } = game;
 
     const { debug, solo } = getDebugSettings();
-    if (debug && solo) {
+    if (debug) {
       game.$patch((state) => {
         state.players[0].name = 'dealer';
         state.players[1].name = 'left';
-        state.players[2].name = 'partner';
         state.players[3].name = 'right';
       });
-      deal();
+      if (solo) {
+        game.$patch((state) => {
+          state.players[2].name = 'partner';
+        });
+        deal();
+      }
     }
 
     const showLobby = computed(() => mode.value === Mode.Start);
