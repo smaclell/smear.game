@@ -45,6 +45,7 @@ function createEmptyScore(id: PlayerIndex) {
     jick: false,
     highest: false,
     lowest: false,
+    game: false,
     gamePoints: 0,
   };
 }
