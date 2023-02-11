@@ -71,7 +71,7 @@ describe('store/score', () => {
       setActivePinia(createPinia());
     });
 
-    it('plays a winning game with jack but without jyck', () => {
+    it('plays a winning game with jack but without jick', () => {
       const store = useScoreStore();
 
       const trump = HA.suit;

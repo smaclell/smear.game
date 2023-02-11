@@ -27,6 +27,13 @@
       >
         4
       </button>
+      <button
+        class="btn btn-blue"
+        :disabled="best >= 5 || !show"
+        @click="bid(5)"
+      >
+        5
+      </button>
     </div>
     <div v-if="show" class="text-center py-4">
       <button class="btn btn-blue" :disabled="!show" @click="bid(-1)">

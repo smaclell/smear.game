@@ -37,7 +37,7 @@
       </p>
       <p v-if="score.highest">Won High</p>
       <p v-if="score.jack">Won Jack</p>
-      <p v-if="score.jyck">Won Jyck</p>
+      <p v-if="score.jick">Won Jick</p>
       <p v-if="score.lowest">Won Low</p>
     </div>
 

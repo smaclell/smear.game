@@ -26,7 +26,7 @@
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGameStore } from '@/store/game';
-import { Suit, CardValue, isJyck, isTrump } from '~/CardTypes';
+import { Suit, CardValue, isJick, isTrump } from '~/CardTypes';
 
 type Card = { suit: Suit; value: CardValue };
 
@@ -64,7 +64,7 @@ const isRecommended = computed(() => {
     !firstPlayed.value ||
     isTrump(trump.value, card) ||
     (firstPlayed.value.suit === card.suit &&
-      !(isJyck(trump.value, firstPlayed.value) || isJyck(trump.value, card)));
+      !(isJick(trump.value, firstPlayed.value) || isJick(trump.value, card)));
 });
 
 const isRequired = computed(() => {
@@ -73,7 +73,7 @@ const isRequired = computed(() => {
     ((isTrump(trump.value, firstPlayed.value) && isTrump(trump.value, card)) ||
       (firstPlayed.value.suit === card.suit &&
         !(
-          isJyck(trump.value, firstPlayed.value) || isJyck(trump.value, card)
+          isJick(trump.value, firstPlayed.value) || isJick(trump.value, card)
         )));
 });
 

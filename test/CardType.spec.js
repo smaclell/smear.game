@@ -1,7 +1,7 @@
-import { isWinner, isJyck, Sentinel, Suit } from '~/CardTypes';
+import { isWinner, isJick, Sentinel, Suit } from '~/CardTypes';
 
 describe('CardTypes', () => {
-  describe('isJyck', () => {
+  describe('isJick', () => {
     it.each`
       trump            | suit             | value | result
       ${Suit.Hearts}   | ${Suit.Diamonds} | ${11} | ${true}
@@ -11,9 +11,9 @@ describe('CardTypes', () => {
       ${Suit.Hearts}   | ${Suit.Diamonds} | ${12} | ${false}
       ${Suit.Hearts}   | ${Suit.Hearts}   | ${11} | ${false}
     `(
-      'when trump is $trump and the card $value of $suit isJyck returns $result',
+      'when trump is $trump and the card $value of $suit isJick returns $result',
       ({ trump, suit, value, result }) => {
-        expect(isJyck(trump, { suit, value })).toEqual(result);
+        expect(isJick(trump, { suit, value })).toEqual(result);
       }
     );
   });

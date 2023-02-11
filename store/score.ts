@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
 import { PlayerIndex } from './Player';
-import { Card, isWinner, isJyck, Sentinel, Suit } from '~/CardTypes';
+import { Card, isWinner, isJick, Sentinel, Suit } from '~/CardTypes';
 
 export interface PlayerScore {
   id: PlayerIndex;
   bid: number;
   jack: boolean;
-  jyck: boolean;
+  jick: boolean;
   highest: boolean;
   lowest: boolean;
   gamePoints: number;
@@ -41,7 +41,7 @@ function createEmptyScore(id: PlayerIndex) {
     id,
     bid: 0,
     jack: false,
-    jyck: false,
+    jick: false,
     highest: false,
     lowest: false,
     gamePoints: 0,
@@ -131,8 +131,8 @@ export const useScoreStore = defineStore('score', {
 
           points += gamePoint(card);
 
-          const jyck = isJyck(trump, card);
-          if (card.suit === trump || jyck) {
+          const jick = isJick(trump, card);
+          if (card.suit === trump || jick) {
             if (isWinner(trump, card, highestCard)) {
               highestCard = card;
               highestPlayer = i;
@@ -143,8 +143,8 @@ export const useScoreStore = defineStore('score', {
               lowestPlayer = i;
             }
 
-            if (jyck) {
-              this.scores[winner].jyck = true;
+            if (jick) {
+              this.scores[winner].jick = true;
 
               if (winner % 2 === 0) {
                 red++;

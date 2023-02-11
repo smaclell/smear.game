@@ -33,11 +33,11 @@ export const isTrump = (trump: Suit, card: Card | undefined) => {
   return (
     trump !== Suit.Invalid &&
     card &&
-    (card.suit === trump || isJyck(trump, card))
+    (card.suit === trump || isJick(trump, card))
   );
 };
 
-export const isJyck = (trump: Suit, card: Card) =>
+export const isJick = (trump: Suit, card: Card) =>
   card.value === 11 && card.suit === Offsuit[trump];
 
 // TODO: This got messy trying to mix the logic from sorting and checking winners
