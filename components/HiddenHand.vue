@@ -47,6 +47,7 @@ const vertical = computed(
 
 .rotate {
   max-width: 120px;
+  max-height: 240px;
 }
 
 .rotate.container {

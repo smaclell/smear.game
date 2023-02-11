@@ -113,9 +113,9 @@ export default defineComponent({
     'p1 p0 p3'
     'l1 l0 l3'
     'cb cb cb';
-  grid-template-columns: minmax(1fr, 180px) 1fr minmax(1fr, 180px);
+  grid-template-columns: minmax(120px, 150px) 1fr minmax(120px, 150px);
   grid-template-rows:
-    minmax(100px, 1fr) minmax(25px, 50px) 1fr minmax(100px, 1fr)
+    minmax(80px, 120px) minmax(25px, 50px) 1fr minmax(100px, 1fr)
     minmax(25px, 50px) minmax(50px, 100px);
 }
 
