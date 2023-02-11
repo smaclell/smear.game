@@ -9,7 +9,7 @@
         Oh ya! You are winning!
       </p>
       <p v-else-if="blue > red" class="text-2xl p-2 losing">
-        Keep going! You are behind!
+        Keep going! You can do it!
       </p>
       <p v-else class="text-2xl p-2 tied">How did this happen? You are tied!</p>
     </template>
@@ -39,6 +39,7 @@
       <p v-if="score.jack">Won Jack</p>
       <p v-if="score.jick">Won Jick</p>
       <p v-if="score.lowest">Won Low</p>
+      <p v-if="score.game">Won Game</p>
     </div>
 
     <div class="my-4 mx-2">

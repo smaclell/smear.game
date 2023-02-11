@@ -9,6 +9,7 @@ export interface PlayerScore {
   jick: boolean;
   highest: boolean;
   lowest: boolean;
+  game: boolean; // TODO: Test it
   gamePoints: number;
 }
 
@@ -187,8 +188,10 @@ export const useScoreStore = defineStore('score', {
 
       if (redGamePoints > blueGamePoints) {
         red++;
+        this.scores[0].game = this.scores[2].game = true;
       } else if (blueGamePoints > redGamePoints) {
         blue++;
+        this.scores[1].game = this.scores[3].game = true;
       }
 
       for (let i = 0; i < this.scores.length; i++) {
