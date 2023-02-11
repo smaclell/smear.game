@@ -1,5 +1,10 @@
 <template>
-  <p :class="['text-xs p-4 text-center', { 'font-bold': highlight }]">
+  <p
+    :class="[
+      'text-xs p-2 text-center whitespace-nowrap',
+      { 'font-bold': active === id },
+    ]"
+  >
     <span v-if="active === id"> ⏰ </span>
     <span class="text-sm">
       {{ name }}

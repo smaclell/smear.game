@@ -12,6 +12,7 @@ import LobbyScreen from '@/screens/LobbyScreen.vue';
 import ScoreScreen from '@/screens/ScoreScreen.vue';
 import { Mode, useGameStore } from '@/store/game';
 import { getDebugSettings } from '@/store/debug';
+import { Suit } from '~/CardTypes';
 
 export default defineComponent({
   name: 'IndexPage',
@@ -25,18 +26,40 @@ export default defineComponent({
     const { mode } = storeToRefs(game);
     const { deal } = game;
 
-    const { debug, solo } = getDebugSettings();
+    const { debug, solo, layout } = getDebugSettings();
     if (debug) {
       game.$patch((state) => {
         state.players[0].name = 'dealer';
-        state.players[1].name = 'left';
-        state.players[3].name = 'right';
+        state.players[1].name = 'right';
+        state.players[3].name = 'left';
       });
       if (solo) {
         game.$patch((state) => {
           state.players[2].name = 'partner';
         });
         deal();
+      } else if (layout) {
+        game.$patch((state) => {
+          state.players[2].name = 'partner';
+        });
+
+        deal();
+
+        game.$patch((state) => {
+          state.players.forEach((p, i) => {
+            const c = p.cards.pop();
+            if (c && i !== 3) {
+              p.played = c;
+            }
+          });
+
+          state.players[0].bid = 2;
+          state.players[1].bid = -1;
+          state.players[2].bid = -1;
+          state.players[3].bid = -1;
+          state.trump = Suit.Diamonds;
+          state.mode = Mode.Playing;
+        });
       }
     }
 

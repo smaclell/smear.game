@@ -1,13 +1,11 @@
 <template>
-  <div class="text-2xl">
-    <div class="my-4">
-      <p><strong>Us:</strong> {{ redScore }}</p>
-      <p><strong>Them:</strong> {{ blueScore }}</p>
-      <p v-if="trump !== 'Invalid'">
-        <strong>Trump:</strong> {{ trump }}
+  <div class="text-sm">
+    <div class="m-2">
+      <p v-if="trump !== 'Invalid'" class="whitespace-nowrap">
         <span :class="[isRed(trump) ? 'text-red-500' : 'text-black']">{{
           Emojis[trump]
         }}</span>
+        <span>{{ trump }}</span>
       </p>
     </div>
   </div>
@@ -18,8 +16,6 @@ import { Emojis, isRed, Suit } from '~/CardTypes';
 
 type Props = {
   trump: Suit;
-  redScore: number;
-  blueScore: number;
 };
 
 defineProps<Props>();

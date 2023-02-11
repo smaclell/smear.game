@@ -15,7 +15,6 @@ const Template: StoryFn<typeof HiddenHand> = (_, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  position: 'top',
   player: {
     cards: [],
   },
@@ -23,7 +22,6 @@ Default.args = {
 
 export const One = Template.bind({});
 One.args = {
-  position: 'top',
   player: {
     cards: [Sentinel],
   },
@@ -31,7 +29,6 @@ One.args = {
 
 export const Two = Template.bind({});
 Two.args = {
-  position: 'top',
   player: {
     cards: [Sentinel, Sentinel],
   },
@@ -39,7 +36,6 @@ Two.args = {
 
 export const Three = Template.bind({});
 Three.args = {
-  position: 'top',
   player: {
     cards: [Sentinel, Sentinel, Sentinel],
   },
@@ -47,7 +43,6 @@ Three.args = {
 
 export const Four = Template.bind({});
 Four.args = {
-  position: 'bottom',
   player: {
     cards: [Sentinel, Sentinel, Sentinel, Sentinel],
   },
@@ -55,7 +50,6 @@ Four.args = {
 
 export const Five = Template.bind({});
 Five.args = {
-  position: 'right',
   player: {
     cards: [Sentinel, Sentinel, Sentinel, Sentinel, Sentinel],
   },
@@ -63,7 +57,6 @@ Five.args = {
 
 export const Six = Template.bind({});
 Six.args = {
-  position: 'left',
   player: {
     cards: [Sentinel, Sentinel, Sentinel, Sentinel, Sentinel, Sentinel],
   },

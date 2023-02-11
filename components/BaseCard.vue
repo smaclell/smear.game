@@ -3,8 +3,6 @@
     :class="[
       'card',
       'p-1',
-      'text-lg',
-      'lg:text-2xl',
       'border-2',
       'border-black',
       'border-solid',
@@ -26,16 +24,20 @@ defineProps<{ disabled: boolean }>();
 
 <style lang="postcss" scoped>
 .card {
+  @apply text-sm;
+
   box-sizing: content-box;
-  min-width: 9px;
-  max-width: 27px;
+  min-width: 32px;
+  max-width: 36px;
   aspect-ratio: 9 / 16;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 540px) {
   .card {
-    min-width: 64px;
-    max-width: 72px;
+    @apply text-lg;
+
+    min-width: 42px;
+    max-width: 64px;
   }
 }
 </style>

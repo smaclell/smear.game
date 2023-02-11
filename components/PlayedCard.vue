@@ -38,7 +38,7 @@ import { Card, Suit, Emojis, isRed, isTrump } from '../CardTypes';
 
 interface Props {
   card: Card;
-  allowed: boolean;
+  allowed?: boolean;
   trump: Suit;
 }
 

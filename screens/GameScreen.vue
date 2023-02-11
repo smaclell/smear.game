@@ -1,62 +1,59 @@
 <template>
-  <div class="outer-grid">
-    <PlayArea
-      v-if="mode === 'Playing'"
-      class="play-area"
-      :trump="trump"
-      :bottom="players[0].played"
-      :left="players[1].played"
-      :top="players[2].played"
-      :right="players[3].played"
-    />
-    <BiddingControls
-      v-else-if="mode === 'Bidding' && !ready"
-      class="play-area"
-      v-bind="biddingProps"
-    />
+  <div class="flex items-center flex-col">
+    <div class="outer-grid">
+      <PlayArea
+        v-if="mode === 'Playing'"
+        class="play-area"
+        :trump="trump"
+        :bottom="players[0].played"
+        :left="players[1].played"
+        :top="players[2].played"
+        :right="players[3].played"
+      />
+      <BiddingControls
+        v-else-if="mode === 'Bidding' && !ready"
+        class="play-area"
+        v-bind="biddingProps"
+      />
 
-    <div class="bottom">
-      <PlayerLabel v-bind="players[0]" :active="active" />
-      <PlayerHand v-bind="playerProps" :player="players[0]" position="bottom" />
-    </div>
+      <div class="bottom">
+        <PlayerLabel v-bind="players[0]" :active="active" />
+        <PlayerHand v-bind="playerProps" :player="players[0]" />
+      </div>
 
-    <div class="left">
-      <PlayerLabel v-bind="players[1]" :active="active" />
-      <component
-        :is="debug ? PlayerHand : HiddenHand"
-        v-bind="playerProps"
-        :player="players[1]"
-        position="bottom"
+      <div class="left">
+        <PlayerLabel v-bind="players[1]" :active="active" />
+        <component
+          :is="OtherPlayerComponent"
+          v-bind="playerProps"
+          :player="players[1]"
+        />
+      </div>
+
+      <div class="top">
+        <component
+          :is="OtherPlayerComponent"
+          v-bind="playerProps"
+          :player="players[2]"
+        />
+        <PlayerLabel v-bind="players[2]" :active="active" />
+      </div>
+
+      <div class="right">
+        <PlayerLabel v-bind="players[3]" :active="active" />
+        <component
+          :is="OtherPlayerComponent"
+          v-bind="playerProps"
+          :player="players[3]"
+        />
+      </div>
+
+      <GameControls
+        v-if="mode === 'Playing'"
+        class="control-bar"
+        :trump="trump"
       />
     </div>
-
-    <div class="top">
-      <component
-        :is="debug ? PlayerHand : HiddenHand"
-        v-bind="playerProps"
-        :player="players[2]"
-        position="bottom"
-      />
-      <PlayerLabel v-bind="players[2]" :active="active" />
-    </div>
-
-    <div class="right">
-      <PlayerLabel v-bind="players[3]" :active="active" />
-      <component
-        :is="debug ? PlayerHand : HiddenHand"
-        v-bind="playerProps"
-        :player="players[3]"
-        position="bottom"
-      />
-    </div>
-
-    <GameControls
-      v-if="mode === 'Playing'"
-      class="control-bar"
-      :trump="trump"
-      :red-score="redScore"
-      :blue-score="blueScore"
-    />
   </div>
 </template>
 
@@ -65,7 +62,6 @@ import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { getDebugSettings } from '@/store/debug';
 import { useGameStore } from '@/store/game';
-import { useScoreStore } from '@/store/score';
 import wait from '@/store/waiter';
 import HiddenHand from '@/components/HiddenHand.vue';
 import PlayerHand from '@/components/PlayerHand.vue';
@@ -74,29 +70,22 @@ import { Card, Suit } from '~/CardTypes';
 export default defineComponent({
   name: 'GameScreen',
   setup() {
-    const { debug } = getDebugSettings();
+    const { debug, layout } = getDebugSettings();
 
     const game = useGameStore();
     const { active, ready, started, players, mode, maxBid, trump } =
       storeToRefs(game);
     const { play, bid } = game;
 
-    const scores = useScoreStore();
-    const { red: redScore, blue: blueScore } = storeToRefs(scores);
-
     wait(game);
 
     return {
-      debug,
       active,
       ready,
       players,
       mode,
       trump,
-      redScore,
-      blueScore,
-      HiddenHand,
-      PlayerHand,
+      OtherPlayerComponent: debug && !layout ? PlayerHand : HiddenHand,
       playerProps: {
         play,
         trump,
@@ -124,21 +113,21 @@ export default defineComponent({
 .outer-grid {
   @apply h-screen;
 
-  margin: auto 0;
   max-width: 720px;
+  max-height: 768px;
+  overflow-x: visible;
   display: grid;
   grid-template:
-    ' . tt . '
+    'cb tt . '
     'll pa rr'
-    'bb bb bb'
-    'cb cb cb';
-  grid-template-columns: minmax(80px, 150px) minmax(240px, 1fr) minmax(
+    'bb bb bb';
+  grid-template-columns: minmax(80px, 150px) minmax(max-content, 1fr) minmax(
       80px,
       150px
     );
-  grid-template-rows: minmax(80px, 150px) 1fr minmax(80px, 150px) minmax(
-      50px,
-      100px
+  grid-template-rows: minmax(80px, 150px) minmax(max-content, 1fr) minmax(
+      80px,
+      150px
     );
 }
 
@@ -159,15 +148,19 @@ export default defineComponent({
   grid-area: cb;
 }
 
+.left,
+.right {
+  align-self: center;
+  overflow: visible;
+}
+
 .left {
   grid-area: ll;
-  align-self: center;
   transform: rotate(90deg) translateY(30px);
 }
 
 .right {
   grid-area: rr;
-  align-self: center;
   transform: rotate(-90deg) translateY(30px);
 }
 

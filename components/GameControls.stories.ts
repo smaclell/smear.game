@@ -10,7 +10,7 @@ export default {
 const Template: StoryFn<typeof GameControls> = (_, { argTypes }) => ({
   components: { GameControls },
   props: Object.keys(argTypes),
-  template: '<GameControls :red-score="7" :blue-score="10" v-bind="$props" />',
+  template: '<GameControls v-bind="$props" />',
 });
 
 export const NoTrump = Template.bind({});

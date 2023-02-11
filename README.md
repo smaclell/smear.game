@@ -2,10 +2,6 @@
 
 # TODO
 
-## Finishing!
-
-- Test across different screen sizes
-
 ## Make it pretty
 
 - Proportions of a card
