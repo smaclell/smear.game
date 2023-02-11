@@ -41,19 +41,27 @@
       <p v-if="score.lowest">Won Low</p>
     </div>
 
-    <StartButton class="my-4 mx-2" />
+    <div class="my-4 mx-2">
+      <StartButton v-if="mode === 'Host'" />
+      <template v-else-if="mode === 'Player'"> Waiting for the host! </template>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useConnectionsStore } from '@/store/connections';
 import { useGameStore } from '@/store/game';
 import { useScoreStore } from '@/store/score';
 
+// TODO: Make game winner obvious
 export default defineComponent({
   name: 'ScoreScreen',
   setup() {
+    const connections = useConnectionsStore();
+    const { mode } = storeToRefs(connections);
+
     const game = useGameStore();
     const { players } = storeToRefs(game);
 
@@ -61,6 +69,7 @@ export default defineComponent({
     const { done, red, blue, scores } = storeToRefs(store);
 
     return {
+      mode,
       done,
       red,
       blue,
