@@ -95,11 +95,11 @@ export default defineComponent({
         }),
       },
       biddingProps: {
-        show: () => debug || active.value === 0,
+        show: computed(() => debug || active.value === 0),
         best: computed(() => maxBid.value[0]),
-        winning: computed(() =>
+        winner: computed(() =>
           maxBid.value[1] in players.value
-            ? players.value[maxBid.value[1]]
+            ? players.value[maxBid.value[1]].name
             : null
         ),
         bid: (value: number) => active.value !== -1 && bid(active.value, value),

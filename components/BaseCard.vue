@@ -13,6 +13,7 @@
       'hover:shadow-xl',
     ]"
     :disabled="disabled"
+    @click="!disabled && emit('click')"
   >
     <slot />
   </div>
@@ -20,6 +21,10 @@
 
 <script setup lang="ts">
 defineProps<{ disabled: boolean }>();
+
+const emit = defineEmits<{
+  (e: 'click'): void;
+}>();
 </script>
 
 <style lang="postcss" scoped>

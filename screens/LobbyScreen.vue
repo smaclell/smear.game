@@ -25,7 +25,7 @@
         </button>
       </div>
     </div>
-    <div v-else>
+    <div v-else-if="players[0].name !== ''">
       <div class="grid grid-cols-3 grid-rows-2 gap-8 place-items-center mb-4">
         <PlayerPlaceholder
           class="col-start-1 row-start-1 row-end-3 left"
