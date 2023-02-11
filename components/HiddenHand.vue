@@ -6,9 +6,9 @@
       vertical ? 'flex-col' : 'flex-row',
       vertical ? 'rotate' : 'straight',
     ]"
-    :data-length="props.cards.length"
+    :data-length="player.cards.length"
   >
-    <template v-for="card in props.cards">
+    <template v-for="card in player.cards">
       <HiddenCard
         :key="card.suit + card.value.toString()"
         :class="[
@@ -25,7 +25,9 @@ import { computed } from 'vue';
 import { Card } from '~/CardTypes';
 
 interface Props {
-  cards: Card[];
+  player: {
+    cards: Card[];
+  };
   position: 'top' | 'left' | 'right' | 'bottom';
 }
 

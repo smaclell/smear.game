@@ -12,16 +12,22 @@
     <BiddingControls
       v-else-if="mode === 'Bidding' && !ready"
       class="play-area"
-      v-bind="bidding"
+      v-bind="biddingProps"
     />
 
-    <PlayerHand class="player-0" v-bind="players[0]" position="bottom" />
+    <PlayerHand
+      class="player-0"
+      v-bind="playerProps"
+      :player="players[0]"
+      position="bottom"
+    />
     <PlayerLabel class="label-0" v-bind="players[0]" />
 
     <component
       :is="debug ? PlayerHand : HiddenHand"
       class="player-1"
-      v-bind="players[1]"
+      v-bind="playerProps"
+      :player="players[1]"
       position="left"
     />
     <PlayerLabel class="label-1" v-bind="players[1]" />
@@ -29,7 +35,8 @@
     <component
       :is="debug ? PlayerHand : HiddenHand"
       class="player-2"
-      v-bind="players[2]"
+      v-bind="playerProps"
+      :player="players[2]"
       position="top"
     />
     <PlayerLabel class="label-2" v-bind="players[2]" />
@@ -37,7 +44,8 @@
     <component
       :is="debug ? PlayerHand : HiddenHand"
       class="player-3"
-      v-bind="players[3]"
+      v-bind="playerProps"
+      :player="players[3]"
       position="right"
     />
     <PlayerLabel class="label-3" v-bind="players[3]" />
@@ -61,6 +69,7 @@ import { useScoreStore } from '@/store/score';
 import wait from '@/store/waiter';
 import HiddenHand from '@/components/HiddenHand.vue';
 import PlayerHand from '@/components/PlayerHand.vue';
+import { Card, Suit } from '~/CardTypes';
 
 export default defineComponent({
   name: 'GameScreen',
@@ -68,8 +77,9 @@ export default defineComponent({
     const { debug } = getDebugSettings();
 
     const game = useGameStore();
-    const { active, ready, players, mode, maxBid, trump } = storeToRefs(game);
-    const { bid } = game;
+    const { active, ready, started, players, mode, maxBid, trump } =
+      storeToRefs(game);
+    const { play, bid } = game;
 
     const scores = useScoreStore();
     const { red: redScore, blue: blueScore } = storeToRefs(scores);
@@ -86,7 +96,15 @@ export default defineComponent({
       blueScore,
       HiddenHand,
       PlayerHand,
-      bidding: {
+      playerProps: {
+        play,
+        trump,
+        led: computed<Card | null>(() => {
+          const card = players.value[started.value]?.played;
+          return card && card.suit !== Suit.Invalid ? card : null;
+        }),
+      },
+      biddingProps: {
         show: () => debug || active.value === 0,
         best: computed(() => maxBid.value[0]),
         winning: computed(() =>

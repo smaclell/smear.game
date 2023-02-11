@@ -3,84 +3,42 @@
     :class="[
       'flex gap-2 md:gap-4 justify-center items-center',
       position,
-      vertical ? 'flex-col' : 'flex-row',
+      position === 'left' || position === 'right' ? 'flex-col' : 'flex-row',
       position === 'bottom' && 'rotate',
     ]"
-    :data-length="props.cards.length"
+    :data-length="player.cards.length"
   >
-    <template v-for="(card, i) in props.cards">
+    <template v-for="(card, i) in player.cards">
       <PlayedCard
         :key="card.suit + card.value.toString()"
         class="flex-grow flex-shrink-0 content-center"
         :data-position="i"
         :card="card"
-        :allowed="isAllowed(card)"
+        :allowed="isAllowed(trump, led, player.cards, card)"
         :trump="trump"
-        @click="play(props.id, card)"
+        @click="play(player.id, card)"
       />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useGameStore } from '@/store/game';
-import { Suit, CardValue, isJick, isTrump } from '~/CardTypes';
+import { PlayerIndex } from '~/store/Player';
+import { Suit, Card } from '~/CardTypes';
+import { isAllowed } from '~/PlayableHelpers';
 
-type Card = { suit: Suit; value: CardValue };
-
-type Props = {
-  id: number;
-  bid: number;
-  name: String;
-  cards: Card[];
-  played: Card;
+interface Props {
+  play: (id: PlayerIndex, card: Card) => void;
+  trump: Suit;
+  led: Card | null;
+  player: {
+    id: PlayerIndex;
+    cards: Card[];
+  };
   position: 'top' | 'left' | 'right' | 'bottom';
-};
+}
 
-const props = defineProps<Props>();
-
-const store = useGameStore();
-const { trump, started, players } = storeToRefs(store);
-const { play } = store;
-
-const vertical = computed(
-  () => props.position === 'left' || props.position === 'right'
-);
-
-const starter = computed(() => players.value[started.value]);
-const firstPlayed = computed<Card | null>(() => {
-  const firstPlayed = starter.value?.played;
-  if (!firstPlayed) {
-    return null;
-  }
-
-  return firstPlayed.suit !== Suit.Invalid ? firstPlayed : null;
-});
-
-const isRecommended = computed(() => {
-  return (card: Card): boolean =>
-    !firstPlayed.value ||
-    isTrump(trump.value, card) ||
-    (firstPlayed.value.suit === card.suit &&
-      !(isJick(trump.value, firstPlayed.value) || isJick(trump.value, card)));
-});
-
-const isRequired = computed(() => {
-  return (card: Card): boolean =>
-    !!firstPlayed.value &&
-    ((isTrump(trump.value, firstPlayed.value) && isTrump(trump.value, card)) ||
-      (firstPlayed.value.suit === card.suit &&
-        !(
-          isJick(trump.value, firstPlayed.value) || isJick(trump.value, card)
-        )));
-});
-
-const isAllowed = computed(() => {
-  const hasRequired = players.value[props.id].cards.some(isRequired.value);
-  return hasRequired ? isRecommended.value : (card: Card) => !!card;
-});
+defineProps<Props>();
 </script>
 
 <style lang="postcss" scoped>
