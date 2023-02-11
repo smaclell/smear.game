@@ -21,7 +21,7 @@
       :player="players[0]"
       position="bottom"
     />
-    <PlayerLabel class="label-0" v-bind="players[0]" />
+    <PlayerLabel class="label-0" v-bind="players[0]" :active="active" />
 
     <component
       :is="debug ? PlayerHand : HiddenHand"
@@ -30,7 +30,7 @@
       :player="players[1]"
       position="left"
     />
-    <PlayerLabel class="label-1" v-bind="players[1]" />
+    <PlayerLabel class="label-1" v-bind="players[1]" :active="active" />
 
     <component
       :is="debug ? PlayerHand : HiddenHand"
@@ -39,7 +39,7 @@
       :player="players[2]"
       position="top"
     />
-    <PlayerLabel class="label-2" v-bind="players[2]" />
+    <PlayerLabel class="label-2" v-bind="players[2]" :active="active" />
 
     <component
       :is="debug ? PlayerHand : HiddenHand"
@@ -48,7 +48,7 @@
       :player="players[3]"
       position="right"
     />
-    <PlayerLabel class="label-3" v-bind="players[3]" />
+    <PlayerLabel class="label-3" v-bind="players[3]" :active="active" />
 
     <GameControls
       v-if="mode === 'Playing'"
@@ -88,6 +88,7 @@ export default defineComponent({
 
     return {
       debug,
+      active,
       ready,
       players,
       mode,

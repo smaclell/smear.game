@@ -1,37 +1,25 @@
 <template>
-  <p
-    :class="[
-      'text-xl md:text-2xl lg:text-3xl p-2 md:p-4',
-      'text-center',
-      { 'font-bold': highlight },
-    ]"
-  >
-    <span v-if="highlight"> ⏰ </span>
-    <span>
+  <p :class="['text-sm p-4 text-center', { 'font-bold': highlight }]">
+    <span v-if="active === id"> ⏰ </span>
+    <span class="text-lg">
       {{ name }}
     </span>
     <span v-if="bid > 0">
       {{ bid }}
     </span>
-    <span v-else-if="bid < 0"> pass </span>
+    <span v-else-if="bid < 0" class="text-gray-500"> pass </span>
   </p>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useGameStore } from '@/store/game';
 import { PlayerIndex } from '@/store/Player';
 
 type Props = {
+  active: number;
   id: PlayerIndex;
   bid: number;
   name: String;
 };
 
-const store = useGameStore();
-const { active } = storeToRefs(store);
-
-const props = defineProps<Props>();
-const highlight = computed(() => active.value === props.id);
+defineProps<Props>();
 </script>
