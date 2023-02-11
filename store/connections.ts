@@ -1,6 +1,6 @@
 import { Peer } from 'peerjs';
 import { defineStore } from 'pinia';
-import { useGameStore } from './game';
+import { Mode, useGameStore } from './game';
 import { PlayerIndex } from './Player';
 import { Card } from '~/CardTypes';
 
@@ -258,13 +258,15 @@ export const useConnectionsStore = defineStore('connections', {
 
         game.play(playerId as PlayerIndex, data.payload);
       } else if (data.action === 'start' && this.mode !== ConnectionMode.Host) {
-        const names = game.players.map((p) => p.name) as [
-          string,
-          string,
-          string,
-          string
-        ];
-        game.order(this.localId, names);
+        if (game.mode === Mode.Start) {
+          const names = game.players.map((p) => p.name) as [
+            string,
+            string,
+            string,
+            string
+          ];
+          game.order(this.localId, names);
+        }
 
         const playerId = this.translate(data.payload.dealer);
         game.start(this.localId, playerId, data.payload.deck);
