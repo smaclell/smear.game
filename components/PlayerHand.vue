@@ -4,7 +4,7 @@
       'flex gap-2 md:gap-4 justify-center items-center',
       position,
       vertical ? 'flex-col' : 'flex-row',
-      vertical ? 'straight' : 'rotate',
+      position === 'bottom' && 'rotate',
     ]"
     :data-length="props.cards.length"
   >
@@ -85,7 +85,7 @@ const isAllowed = computed(() => {
 
 <style lang="postcss" scoped>
 .top {
-  transform: rotate(180deg);
+  /* transform: rotate(180deg); */
 }
 
 .left {
