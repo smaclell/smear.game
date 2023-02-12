@@ -43,7 +43,7 @@
     </div>
 
     <div class="my-4 mx-2">
-      <StartButton v-if="mode === 'Host'" />
+      <StartButton v-if="debug || mode === 'Host'" />
       <template v-else-if="mode === 'Player'"> Waiting for the host! </template>
     </div>
   </div>
@@ -52,14 +52,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
+import { getDebugSettings } from '@/store/debug';
 import { useConnectionsStore } from '@/store/connections';
 import { useGameStore } from '@/store/game';
 import { useScoreStore } from '@/store/score';
 
-// TODO: Make game winner obvious
 export default defineComponent({
   name: 'ScoreScreen',
   setup() {
+    const { debug } = getDebugSettings();
+
     const connections = useConnectionsStore();
     const { mode } = storeToRefs(connections);
 
@@ -70,6 +72,7 @@ export default defineComponent({
     const { done, red, blue, scores } = storeToRefs(store);
 
     return {
+      debug,
       mode,
       done,
       red,

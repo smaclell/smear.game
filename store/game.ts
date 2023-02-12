@@ -175,7 +175,7 @@ export const useGameStore = defineStore('game', {
         const [bid, playerId] = this.maxBid;
 
         this.$patch({
-          mode: bid > 0 ? Mode.Playing : Mode.Start,
+          mode: bid > 0 ? Mode.Playing : Mode.Score,
           started: playerId,
           played: 0,
         });

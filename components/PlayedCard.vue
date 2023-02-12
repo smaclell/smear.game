@@ -15,12 +15,12 @@
     @click="allowed && emit('click', card)"
   >
     <div class="justify-start self-start">
-      <p>{{ label[0] }}</p>
+      <p>{{ label }}</p>
       <p>{{ icon }}</p>
     </div>
     <div class="justify-end self-end">
       <p class="rotate-180">{{ icon }}</p>
-      <p class="rotate-180">{{ label[0] }}</p>
+      <p class="rotate-180">{{ label }}</p>
     </div>
   </BaseCard>
 </template>
@@ -52,10 +52,10 @@ const lookup = [
   '8',
   '9',
   '10',
-  'Jack',
-  'Queen',
-  'King',
-  'Ace',
+  'J',
+  'Q',
+  'K',
+  'A',
 ];
 
 const card = computed<Card>(() => props.card);

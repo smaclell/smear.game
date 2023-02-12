@@ -4,10 +4,7 @@
 
 ## Make it pretty
 
-- Proportions of a card
 - Celebration
-- Rotation: https://www.30secondsofcode.org/css/s/rotating-card
-- Movement
 - Highlight the winning card
 - Highlight bids
 - Instant lose if bid 5

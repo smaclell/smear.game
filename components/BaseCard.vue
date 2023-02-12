@@ -7,7 +7,6 @@
       'border-black',
       'border-solid',
       'rounded',
-      'font-serif',
       disabled ? 'shadow-sm cursor-not-allowed' : 'cursor-grab shadow-md',
       'hover:shadow-xl',
     ]"
