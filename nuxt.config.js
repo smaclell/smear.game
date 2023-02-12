@@ -22,6 +22,15 @@ export default {
 
   storybook: {
     stories: ['~/**/*.stories.ts'],
+    parameters: {
+      backgrounds: {
+        default: 'poker-green',
+        values: [
+          { name: 'white', value: '#ffffff' },
+          { name: 'poker-green', value: '#35654d' },
+        ],
+      },
+    },
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins

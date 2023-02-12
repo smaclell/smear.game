@@ -1,7 +1,10 @@
 <template>
-  <div class="text-sm">
-    <div class="m-2">
-      <p v-if="trump !== 'Invalid'" class="whitespace-nowrap">
+  <div
+    v-if="trump !== 'Invalid'"
+    class="text-sm text-black border-2 border-black border-solid rounded bg-white w-fit h-fit"
+  >
+    <div class="p-0.5">
+      <p>
         <span :class="[isRed(trump) ? 'text-red-500' : 'text-black']">{{
           Emojis[trump]
         }}</span>

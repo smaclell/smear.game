@@ -12,7 +12,7 @@
     <span v-if="bid > 0">
       {{ bid }}
     </span>
-    <span v-else-if="bid < 0" class="text-gray-500"> pass </span>
+    <span v-else-if="bid < 0" class="text-gray-300"> pass </span>
   </p>
 </template>
 
