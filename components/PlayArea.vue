@@ -44,15 +44,92 @@ const sentinel = Sentinel;
 
 <style lang="postcss" scoped>
 .left,
+.right,
+.top,
+.bottom {
+  z-index: 100;
+}
+
+.left,
 .right {
   align-self: center;
 }
 
+.left {
+  animation: 0.3s ease 0s left-in;
+  transform: rotate(8deg);
+}
+
+@keyframes left-in {
+  0% {
+    transform: translate(-200%, 0);
+  }
+
+  60% {
+    transform: translate(-50%, 2%);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(8deg);
+  }
+}
+
+.right {
+  animation: 0.3s ease 0s right-in;
+  transform: rotate(-8deg);
+}
+
+@keyframes right-in {
+  0% {
+    transform: translate(200%, 0);
+  }
+
+  60% {
+    transform: translate(50%, 2%);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+}
+
 .top {
+  animation: 0.3s ease 0s top-in;
+  transform: rotate(-8deg);
   align-self: self-start;
 }
 
+@keyframes top-in {
+  0% {
+    transform: translate(0, -200%);
+  }
+
+  60% {
+    transform: translate(2%, -50%);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+}
+
 .bottom {
+  animation: 0.3s ease 0s bottom-in;
+  transform: rotate(8deg);
   align-self: self-end;
+}
+
+@keyframes bottom-in {
+  0% {
+    transform: translate(0, 200%);
+  }
+
+  60% {
+    transform: translate(-2%, 50%);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(8deg);
+  }
 }
 </style>
