@@ -21,27 +21,22 @@ const Template: StoryFn<typeof PlayedCard> = (_, { argTypes }) => ({
 export const Default = Template.bind({});
 Default.args = {
   card: Queen,
-  allowed: true,
-  trump: false,
 };
 
 export const Trump = Template.bind({});
 Trump.args = {
   card: Ace,
-  allowed: true,
-  trump: true,
+  trump: Ace.suit,
 };
 
 export const Blocked = Template.bind({});
 Blocked.args = {
   card: Ten,
   allowed: false,
-  trump: false,
 };
 
 export const Low = Template.bind({});
 Low.args = {
   card: Two,
-  allowed: true,
-  trump: true,
+  trump: Two.suit,
 };
