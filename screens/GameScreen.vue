@@ -130,6 +130,7 @@ export default defineComponent({
     );
 }
 
+/* FYI: maybe used in cards */
 .play-area {
   grid-area: pa;
 }

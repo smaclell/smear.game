@@ -14,11 +14,11 @@
     :disabled="!allowed"
     @click="allowed && emit('click', card)"
   >
-    <div class="justify-start self-start">
+    <div class="pl-1 pt-1 justify-start self-start">
       <p>{{ label }}</p>
       <p>{{ icon }}</p>
     </div>
-    <div class="justify-end self-end">
+    <div class="pr-1 pb-1 justify-end self-end">
       <p class="rotate-180">{{ icon }}</p>
       <p class="rotate-180">{{ label }}</p>
     </div>

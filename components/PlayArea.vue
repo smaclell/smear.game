@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-3 grid-rows-2 gap-8 place-items-center">
+  <div class="grid grid-cols-3 grid-rows-2 gap-4 place-items-center">
     <PlayedCard
       v-if="left && left !== sentinel"
       class="col-start-1 row-start-1 row-end-3 left"
@@ -48,10 +48,6 @@ const sentinel = Sentinel;
 .top,
 .bottom {
   z-index: 100;
-}
-
-.left,
-.right {
   align-self: center;
 }
 
@@ -96,7 +92,6 @@ const sentinel = Sentinel;
 .top {
   animation: 0.3s ease 0s top-in;
   transform: rotate(-8deg);
-  align-self: self-start;
 }
 
 @keyframes top-in {
@@ -116,7 +111,6 @@ const sentinel = Sentinel;
 .bottom {
   animation: 0.3s ease 0s bottom-in;
   transform: rotate(8deg);
-  align-self: self-end;
 }
 
 @keyframes bottom-in {

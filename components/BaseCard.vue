@@ -2,11 +2,11 @@
   <div
     :class="[
       'card',
-      'p-1',
       'border-2',
       'border-black',
       'border-solid',
       'rounded',
+      'text-center',
       disabled ? 'shadow-sm cursor-not-allowed' : 'cursor-grab shadow-md',
       'hover:shadow-xl',
     ]"
@@ -27,20 +27,37 @@ const emit = defineEmits<{
 
 <style lang="postcss" scoped>
 .card {
-  @apply text-sm;
+  @apply text-xs;
 
+  /*
+  Warning:
+  This does not work as well when it is responsive using min-* and max-*.
+  See https://css-tricks.com/almanac/properties/a/aspect-ratio/
+  */
+  width: 42px;
+  aspect-ratio: 2.25 / 3.5;
   box-sizing: content-box;
-  min-width: 32px;
-  max-width: 36px;
-  aspect-ratio: 2.5 / 3.5;
 }
 
-@media (min-width: 540px) {
-  .card {
-    @apply text-lg;
+/*
+.play-area /deep/ .card {
+  @apply text-sm;
+}
+*/
 
-    min-width: 42px;
-    max-width: 64px;
+@media (min-width: 480px) {
+  .card {
+    @apply text-sm;
+
+    width: 54px;
+  }
+}
+
+@media (min-width: 640px) {
+  .card {
+    @apply text-base;
+
+    width: 72px;
   }
 }
 </style>

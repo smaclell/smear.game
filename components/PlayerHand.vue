@@ -6,7 +6,7 @@
     <template v-for="(card, i) in player.cards">
       <PlayedCard
         :key="card.suit + card.value.toString()"
-        class="card flex-grow flex-shrink-0 content-center"
+        class="card flex-shrink-0 content-center"
         :data-position="i"
         :card="card"
         :allowed="isAllowed(trump, led, player.cards, card)"
