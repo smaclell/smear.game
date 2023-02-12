@@ -10,8 +10,9 @@ import { storeToRefs } from 'pinia';
 import GameScreen from '@/screens/GameScreen.vue';
 import LobbyScreen from '@/screens/LobbyScreen.vue';
 import ScoreScreen from '@/screens/ScoreScreen.vue';
-import { Mode, useGameStore } from '@/store/game';
 import { getDebugSettings } from '@/store/debug';
+import { Mode, useGameStore } from '@/store/game';
+import { useScoreStore } from '~/store/score';
 import { Suit } from '~/CardTypes';
 
 export default defineComponent({
@@ -26,14 +27,44 @@ export default defineComponent({
     const { mode } = storeToRefs(game);
     const { deal } = game;
 
-    const { debug, solo, layout } = getDebugSettings();
+    const scores = useScoreStore();
+
+    const { debug, solo, score, layout } = getDebugSettings();
     if (debug) {
       game.$patch((state) => {
         state.players[0].name = 'dealer';
         state.players[1].name = 'right';
         state.players[3].name = 'left';
       });
-      if (solo) {
+
+      if (score) {
+        game.$patch((state) => {
+          state.mode = Mode.Score;
+          state.players[2].name = 'partner';
+        });
+
+        scores.$patch((state) => {
+          state.red = 10;
+          state.blue = 7;
+          state.scores[0].bid = 3;
+          state.scores[0].gamePoints = 3;
+          state.scores[0].lowest = true;
+
+          state.scores[1].bid = 4;
+          state.scores[1].gamePoints = 16;
+          state.scores[1].game = true;
+          state.scores[1].highest = true;
+          state.scores[1].jack = true;
+
+          state.scores[2].bid = -1;
+          state.scores[2].gamePoints = 2;
+
+          state.scores[3].bid = -1;
+          state.scores[3].gamePoints = 10;
+          state.scores[3].jick = true;
+          state.scores[3].game = true;
+        });
+      } else if (solo) {
         game.$patch((state) => {
           state.players[2].name = 'partner';
         });

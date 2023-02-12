@@ -22,7 +22,7 @@
     <div
       v-for="score in scores"
       :key="score.id"
-      class="text-xl p-2 m-2 shadow shadow-sm border-2 border-black border-solid rounded"
+      class="text-xl p-2 m-2 shadow border-2 border-black border-solid rounded"
     >
       <p>
         <strong>{{ players[score.id].name }}</strong>
