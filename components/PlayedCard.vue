@@ -15,19 +15,12 @@
     @click="allowed && emit('click', card)"
   >
     <div class="justify-start self-start">
-      <span>{{ icon }}</span>
-    </div>
-    <div class="flex-auto flex items-center justify-center">
-      <template v-if="/\d+/.test(label)">
-        <span>{{ label }}</span>
-      </template>
-      <template v-else>
-        <span>{{ label[0] }}</span>
-        <span class="long-name">{{ label.substring(1) }}</span>
-      </template>
+      <p>{{ label[0] }}</p>
+      <p>{{ icon }}</p>
     </div>
     <div class="justify-end self-end">
-      <span>{{ icon }}</span>
+      <p class="rotate-180">{{ icon }}</p>
+      <p class="rotate-180">{{ label[0] }}</p>
     </div>
   </BaseCard>
 </template>
@@ -78,6 +71,10 @@ const emit = defineEmits<{
 </script>
 
 <style lang="postcss" scoped>
+[disabled] > * {
+  @apply opacity-50;
+}
+
 .long-name {
   display: none;
 }

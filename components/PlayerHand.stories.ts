@@ -23,10 +23,16 @@ const D = { suit: Suit.Clubs, value: 12 };
 const E = { suit: Suit.Spades, value: 13 };
 const F = { suit: Suit.Hearts, value: 7 };
 
-export const Default = Template.bind({});
-Default.args = {
+const defaults = {
   led,
   trump,
+  // eslint-disable-next-line no-console
+  play: console.log,
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  ...defaults,
   player: {
     id: 0,
     cards: [],
@@ -35,8 +41,7 @@ Default.args = {
 
 export const One = Template.bind({});
 One.args = {
-  led,
-  trump,
+  ...defaults,
   player: {
     id: 0,
     cards: [A],
@@ -45,8 +50,7 @@ One.args = {
 
 export const Two = Template.bind({});
 Two.args = {
-  led,
-  trump,
+  ...defaults,
   player: {
     id: 0,
     cards: [A, B],
@@ -55,8 +59,7 @@ Two.args = {
 
 export const Three = Template.bind({});
 Three.args = {
-  led,
-  trump,
+  ...defaults,
   player: {
     id: 0,
     cards: [A, B, C],
@@ -65,8 +68,7 @@ Three.args = {
 
 export const Four = Template.bind({});
 Four.args = {
-  led,
-  trump,
+  ...defaults,
   player: {
     id: 0,
     cards: [A, B, C, D],
@@ -75,8 +77,7 @@ Four.args = {
 
 export const Five = Template.bind({});
 Five.args = {
-  led,
-  trump,
+  ...defaults,
   player: {
     id: 0,
     cards: [A, B, C, D, E],
@@ -85,8 +86,7 @@ Five.args = {
 
 export const Six = Template.bind({});
 Six.args = {
-  led,
-  trump,
+  ...defaults,
   player: {
     id: 0,
     cards: [A, B, C, D, E, F],

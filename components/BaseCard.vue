@@ -7,9 +7,8 @@
       'border-black',
       'border-solid',
       'rounded',
-      disabled
-        ? 'shadow-sm opacity-50 cursor-not-allowed'
-        : 'cursor-grab shadow-md',
+      'font-serif',
+      disabled ? 'shadow-sm cursor-not-allowed' : 'cursor-grab shadow-md',
       'hover:shadow-xl',
     ]"
     :disabled="disabled"
@@ -34,7 +33,7 @@ const emit = defineEmits<{
   box-sizing: content-box;
   min-width: 32px;
   max-width: 36px;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 2.5 / 3.5;
 }
 
 @media (min-width: 540px) {
