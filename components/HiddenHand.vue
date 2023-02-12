@@ -27,6 +27,7 @@ defineProps<Props>();
 <style lang="postcss" scoped>
 .hidden-card {
   margin: 4px -16px;
+  transform: rotate(4deg);
 }
 
 .container {

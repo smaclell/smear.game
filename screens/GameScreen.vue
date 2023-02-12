@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center flex-col">
+  <div class="flex items-center flex-col overflow-hidden">
     <div class="outer-grid">
       <PlayArea
         v-if="mode === 'Playing'"
@@ -114,8 +114,7 @@ export default defineComponent({
   @apply h-screen;
 
   max-width: 720px;
-  max-height: 768px;
-  overflow-x: visible;
+  max-height: 640px;
   display: grid;
   grid-template:
     'cb tt . '
