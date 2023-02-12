@@ -37,119 +37,157 @@ defineProps<Props>();
 
 <style lang="postcss" scoped>
 .card {
+  --diff: calc(var(--mid) - var(--pos));
+  --shift: 0%;
+  --offset: 0%;
+
   transition: transform 0.2s ease-in;
+  z-index: calc(10 * var(--pos) + 10);
+
+  /*
+  TODO: Attempt to compute the shift
+  It works with 10% per step
+  */
+  transform: translate(calc(100% * var(--diff)), 0%)
+    rotate(calc(-8deg * var(--diff)))
+    translate(calc(-50% * var(--diff)), calc(-1 * var(--shift) - var(--offset)));
+}
+
+.card:hover {
+  --offset: 10%;
 }
 
 [data-position='0'] {
-  z-index: 10;
+  --pos: 0;
 }
 
 [data-position='1'] {
-  z-index: 20;
+  --pos: 1;
 }
 
 [data-position='2'] {
-  z-index: 30;
+  --pos: 2;
 }
 
 [data-position='3'] {
-  z-index: 40;
+  --pos: 3;
 }
 
 [data-position='4'] {
-  z-index: 50;
+  --pos: 4;
 }
 
 [data-position='5'] {
-  z-index: 60;
+  --pos: 5;
 }
 
-[data-position='6'] {
-  z-index: 70;
+[data-length='0'],
+[data-length='1'] {
+  --mid: 0;
+}
+
+[data-length='2'] {
+  --mid: 0.5;
+}
+
+[data-length='3'] {
+  --mid: 1;
+}
+
+[data-length='4'] {
+  --mid: 1.5;
+}
+
+[data-length='5'] {
+  --mid: 2;
+}
+
+[data-length='6'] {
+  --mid: 2.5;
 }
 
 /* [data-length='2'] */
 [data-length='2'] [data-position='0'] {
-  transform: translate(50%, 0) rotate(-4deg) translate(-25%, -5%);
+  --shift: 2.5%;
 }
 
 [data-length='2'] [data-position='1'] {
-  transform: translate(-50%, 0) rotate(4deg) translate(25%, -5%);
+  --shift: 2.5%;
 }
 
 /* [data-length='3'] */
 [data-length='3'] [data-position='0'] {
-  transform: translate(100%, 0) rotate(-8deg) translate(-50%, -5%);
+  --shift: 5%;
 }
 
 [data-length='3'] [data-position='1'] {
-  transform: translate(0, -2.5%);
+  --shift: 2.5%;
 }
 
 [data-length='3'] [data-position='2'] {
-  transform: translate(-100%, 0) rotate(8deg) translate(50%, -5%);
+  --shift: 5%;
 }
 
 /* [data-length='4'] */
 [data-length='4'] [data-position='0'] {
-  transform: translate(150%, 0) rotate(-12deg) translate(-75%, -10%);
+  --shift: 10%;
 }
 
 [data-length='4'] [data-position='1'] {
-  transform: translate(50%, 0) rotate(-4deg) translate(-25%, -5%);
+  --shift: 5%;
 }
 
 [data-length='4'] [data-position='2'] {
-  transform: translate(-50%, 0) rotate(4deg) translate(25%, -5%);
+  --shift: 5%;
 }
 
 [data-length='4'] [data-position='3'] {
-  transform: translate(-150%, 0) rotate(12deg) translate(75%, -10%);
+  --shift: 10%;
 }
 
 /* [data-length='5'] */
 [data-length='5'] [data-position='0'] {
-  transform: translate(200%, 0) rotate(-16deg) translate(-100%, -10%);
+  --shift: 10%;
 }
 
 [data-length='5'] [data-position='1'] {
-  transform: translate(100%, 0) rotate(-8deg) translate(-50%, -5%);
+  --shift: 5%;
 }
 
 [data-length='5'] [data-position='2'] {
-  transform: translate(0, -2.5%);
+  --shift: 2.5%;
 }
 
 [data-length='5'] [data-position='3'] {
-  transform: translate(-100%, 0) rotate(8deg) translate(50%, -5%);
+  --shift: 5%;
 }
 
 [data-length='5'] [data-position='4'] {
-  transform: translate(-200%, 0) rotate(16deg) translate(100%, -10%);
+  --shift: 10%;
 }
 
 /* [data-length='6'] */
 [data-length='6'] [data-position='0'] {
-  transform: translate(250%, 0%) rotate(-20deg) translate(-125%, -20%);
+  --shift: 20%;
 }
 
 [data-length='6'] [data-position='1'] {
-  transform: translate(150%, 0) rotate(-12deg) translate(-75%, -10%);
+  --shift: 10%;
 }
 
 [data-length='6'] [data-position='2'] {
-  transform: translate(50%, 0) rotate(-4deg) translate(-25%, -5%);
+  --shift: 5%;
 }
 
 [data-length='6'] [data-position='3'] {
-  transform: translate(-50%, 0) rotate(4deg) translate(25%, -5%);
+  --shift: 5%;
 }
 
 [data-length='6'] [data-position='4'] {
-  transform: translate(-150%, 0) rotate(12deg) translate(75%, -10%);
+  --shift: 10%;
 }
 
 [data-length='6'] [data-position='5'] {
-  transform: translate(-250%, 0) rotate(20deg) translate(125%, -15%);
+  --shift: 20%;
 }
 </style>
