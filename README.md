@@ -4,8 +4,6 @@
 
 ## Make it pretty
 
-- Celebration
-- Highlight the winning card
 - Highlight bids
 - Instant lose if bid 5
 
