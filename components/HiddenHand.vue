@@ -6,7 +6,7 @@
     <template v-for="card in player.cards">
       <HiddenCard
         :key="card.suit + card.value.toString()"
-        class="hidden-card flex-grow flex-shrink-0 content-center"
+        class="hidden-card flex-shrink-0 content-center"
       />
     </template>
   </div>
