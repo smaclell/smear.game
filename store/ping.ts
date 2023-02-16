@@ -6,33 +6,44 @@ export function ready() {
 }
 
 export function play() {
-  // From playing with https://github.com/Tonejs/Tone.js/blob/dev/examples/simpleSynth.html
-  const synth = new Tone.Synth({
+  // From playing with https://tonejs.github.io/examples/monoSynth
+  const synth = new Tone.PolySynth(Tone.MonoSynth, {
+    volume: -8,
     oscillator: {
-      type: 'amtriangle',
-      harmonicity: 0.5,
-      modulationType: 'sine',
+      type: 'square8',
     },
     envelope: {
-      attackCurve: 'exponential',
       attack: 0.05,
-      decay: 0.2,
-      sustain: 0.2,
-      release: 1.5,
+      decay: 0.3,
+      sustain: 0.4,
+      release: 0.8,
     },
-    portamento: 0.05,
+    filterEnvelope: {
+      attack: 0.001,
+      decay: 0.7,
+      sustain: 0.1,
+      release: 0.8,
+      baseFrequency: 300,
+      octaves: 4,
+    },
   }).toDestination();
 
-  synth.triggerAttackRelease('E2', '8n');
+  synth.triggerAttackRelease('F6', '8n');
 }
 
 export function subscribe(store: ReturnType<typeof useGameStore>) {
-  store.$subscribe((_, state) => {
+  const run = () => {
     const validMode =
-      state.mode === Mode.Playing || state.mode === Mode.Bidding;
+      store.mode === Mode.Playing || store.mode === Mode.Bidding;
     const active = store.active === 0;
     if (validMode && active) {
       play();
     }
+  };
+
+  run();
+
+  store.$subscribe(() => {
+    run();
   });
 }
