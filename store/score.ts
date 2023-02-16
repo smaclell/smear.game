@@ -61,7 +61,6 @@ export const useScoreStore = defineStore('score', {
       createEmptyScore(3),
     ],
     hands: [],
-    // TODO: Add running lowest and highest (highlight them)
   }),
   getters: {
     done: (state) => state.red >= 15 || state.blue >= 15,

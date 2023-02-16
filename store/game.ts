@@ -124,7 +124,6 @@ export const useGameStore = defineStore('game', {
       return true;
     },
     deal() {
-      // TODO: Can these methods be simplified?
       this.dealer = ((this.dealer + 1) % 4) as PlayerIndex;
       const deck = shuffle(getPerfectDeck());
       this.start(0, this.dealer, deck);
@@ -166,7 +165,8 @@ export const useGameStore = defineStore('game', {
         }
       });
     },
-    next() {
+    // Simple dependency injection for testing!
+    next(scores?: Pick<ReturnType<typeof useScoreStore>, 'add' | 'summarize'>) {
       if (!this.ready) {
         return false;
       }
@@ -185,7 +185,9 @@ export const useGameStore = defineStore('game', {
 
       if (this.mode === Mode.Playing) {
         this.$patch((state) => {
-          const scores = useScoreStore();
+          if (!scores) {
+            scores = useScoreStore();
+          }
 
           const played = [];
           for (const player of state.players) {
@@ -200,10 +202,9 @@ export const useGameStore = defineStore('game', {
           const hasCards = state.players[0].cards.length > 0;
           state.mode = hasCards ? Mode.Playing : Mode.Score;
           if (!hasCards) {
-            const scores = useScoreStore();
             scores.summarize(
-              this.trump,
-              this.players.map((p) => p.bid)
+              state.trump,
+              state.players.map((p) => p.bid)
             );
           }
         });

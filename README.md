@@ -2,10 +2,13 @@
 
 # TODO
 
-## Make it pretty
+## Make it better
 
 - Highlight bids
 - Instant lose if bid 5
+- Stronger connectivity by acknowledging messages and replaying them
+- Add running lowest and highest (highlight them)
+- Beep on your turn
 
 ## Because you want to
 

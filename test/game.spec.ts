@@ -1,6 +1,8 @@
 import { setActivePinia, createPinia } from 'pinia';
 import { Mode, useGameStore } from '@/store/game';
 import { Card, CardValue, Suit, Sentinel } from '~/CardTypes';
+import { useScoreStore } from '~/store/score';
+import { PlayerIndex } from '~/store/Player';
 
 function createCard(suit: Suit, value: CardValue): Card {
   return { suit, value };
@@ -324,30 +326,146 @@ describe('store/game', () => {
   });
 
   describe('next', () => {
-    describe('moves to playing after', () => {
-      it('everyone bids', () => {
-        const store = useGameStore();
-        store.$patch({
-          mode: Mode.Bidding,
-          started: 1,
-          played: 4,
-        });
-
-        store.players[0].bid = 2;
-        store.players[2].bid = 3;
-        expect(store.ready).toBe(true);
-
-        expect(store.next()).toEqual(true);
-
-        expect(store.ready).toBe(false);
-        expect(store.played).toEqual(0);
-        expect(store.started).toEqual(2);
-        expect(store.mode).toEqual(Mode.Playing);
+    it('moves to playing after everyone passes', () => {
+      const store = useGameStore();
+      store.$patch({
+        mode: Mode.Bidding,
+        started: 1,
+        played: 4,
       });
+
+      store.players.forEach((p) => {
+        p.bid = -1;
+      });
+      expect(store.ready).toBe(true);
+
+      expect(store.next()).toEqual(true);
+
+      expect(store.ready).toBe(false);
+      expect(store.played).toEqual(0);
+      expect(store.started).toEqual(0);
+      expect(store.mode).toEqual(Mode.Score);
     });
 
-    // These are mostly covered by the Score store, but could benefit from more
-    // TODO: Test Playing
-    // TODO: Test Score
+    it('moves to score after everyone bids', () => {
+      const store = useGameStore();
+      store.$patch({
+        mode: Mode.Bidding,
+        started: 1,
+        played: 4,
+      });
+
+      store.players[0].bid = 2;
+      store.players[2].bid = 3;
+      expect(store.ready).toBe(true);
+
+      expect(store.next()).toEqual(true);
+
+      expect(store.ready).toBe(false);
+      expect(store.played).toEqual(0);
+      expect(store.started).toEqual(2);
+      expect(store.mode).toEqual(Mode.Playing);
+    });
+
+    type ScoreStore = ReturnType<typeof useScoreStore>;
+    it('keeps playing when there are more cards', () => {
+      const store = useGameStore();
+
+      const trump = Suit.Hearts;
+      store.$patch({
+        trump,
+        mode: Mode.Playing,
+        started: 1,
+        played: 4,
+      });
+
+      const bad: Card = { suit: Suit.Diamonds, value: 4 };
+      store.players.forEach((p, i) => {
+        p.bid = i;
+        p.played = bad;
+      });
+
+      expect(store.mode).toEqual(Mode.Playing);
+
+      store.players[0].cards = [bad];
+
+      const scores: Pick<ScoreStore, 'add' | 'summarize'> = {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        add(started: PlayerIndex, trump: Suit, cards: Card[]): PlayerIndex {
+          return 3;
+        },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        summarize(trump: Suit, bids: number[]) {},
+      };
+
+      const add = jest.spyOn(scores, 'add');
+      const summarize = jest.spyOn(scores, 'summarize');
+
+      expect(store.ready).toBe(true);
+
+      expect(store.next(scores)).toEqual(true);
+
+      expect(store.ready).toBe(false);
+      expect(store.started).toEqual(3);
+      expect(store.played).toEqual(0);
+      expect(store.mode).toEqual(Mode.Playing);
+
+      expect(store.players[0].played).toEqual(Sentinel);
+      expect(store.players[1].played).toEqual(Sentinel);
+      expect(store.players[2].played).toEqual(Sentinel);
+      expect(store.players[3].played).toEqual(Sentinel);
+
+      expect(add).toHaveBeenCalledWith(1, trump, [bad, bad, bad, bad]);
+      expect(summarize).not.toHaveBeenCalled();
+    });
+
+    it('shows the score when there are no more cards', () => {
+      const store = useGameStore();
+
+      const trump = Suit.Hearts;
+      store.$patch({
+        trump,
+        mode: Mode.Playing,
+        started: 1,
+        played: 4,
+      });
+
+      const bad: Card = { suit: Suit.Diamonds, value: 4 };
+      store.players.forEach((p, i) => {
+        p.bid = i;
+        p.played = bad;
+      });
+
+      expect(store.mode).toEqual(Mode.Playing);
+
+      const scores: Pick<ScoreStore, 'add' | 'summarize'> = {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        add(started: PlayerIndex, trump: Suit, cards: Card[]): PlayerIndex {
+          return 3;
+        },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        summarize(trump: Suit, bids: number[]) {},
+      };
+
+      const add = jest.spyOn(scores, 'add');
+      const summarize = jest.spyOn(scores, 'summarize');
+
+      expect(store.ready).toBe(true);
+
+      expect(store.next(scores)).toEqual(true);
+
+      expect(store.ready).toBe(false);
+      expect(store.started).toEqual(3);
+      expect(store.played).toEqual(0);
+      expect(store.mode).toEqual(Mode.Score);
+
+      expect(store.players[0].played).toEqual(Sentinel);
+      expect(store.players[1].played).toEqual(Sentinel);
+      expect(store.players[2].played).toEqual(Sentinel);
+      expect(store.players[3].played).toEqual(Sentinel);
+
+      expect(add).toHaveBeenCalledWith(1, trump, [bad, bad, bad, bad]);
+      expect(summarize).toHaveBeenCalledWith(trump, [0, 1, 2, 3]);
+    });
   });
 });
