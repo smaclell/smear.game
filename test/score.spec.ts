@@ -116,26 +116,110 @@ describe('store/score', () => {
 
       expect(store.scores[0].bid).toEqual(3);
       expect(store.scores[0].jack).toEqual(true);
+      expect(store.scores[0].jick).toEqual(false);
       expect(store.scores[0].highest).toEqual(true);
       expect(store.scores[0].lowest).toEqual(true);
+      expect(store.scores[0].game).toEqual(false);
       expect(store.scores[0].gamePoints).toEqual(18);
 
       expect(store.scores[1].bid).toEqual(2);
       expect(store.scores[1].jack).toEqual(false);
+      expect(store.scores[1].jick).toEqual(false);
       expect(store.scores[1].highest).toEqual(false);
       expect(store.scores[1].lowest).toEqual(false);
+      expect(store.scores[1].game).toEqual(true);
       expect(store.scores[1].gamePoints).toEqual(25);
 
       expect(store.scores[2].bid).toEqual(-1);
       expect(store.scores[2].jack).toEqual(false);
+      expect(store.scores[2].jick).toEqual(false);
       expect(store.scores[2].highest).toEqual(false);
       expect(store.scores[2].lowest).toEqual(false);
+      expect(store.scores[2].game).toEqual(false);
       expect(store.scores[2].gamePoints).toEqual(0);
 
       expect(store.scores[3].bid).toEqual(-1);
       expect(store.scores[3].jack).toEqual(false);
+      expect(store.scores[3].jick).toEqual(false);
       expect(store.scores[3].highest).toEqual(false);
       expect(store.scores[3].lowest).toEqual(false);
+      expect(store.scores[3].game).toEqual(true);
+      expect(store.scores[3].gamePoints).toEqual(0);
+    });
+
+    it('plays a winning game with jack and jick', () => {
+      const store = useScoreStore();
+
+      const trump = HA.suit;
+
+      // Giving game points, highest, jack, temporary low
+      let hand = [HA, HT, H7, H3];
+      expect(store.add(0, trump, hand)).toEqual(0);
+      expect(store.hands[store.hands.length - 1].cards).toEqual(hand);
+      expect(store.hands[store.hands.length - 1].winner).toEqual(0);
+
+      // Winning with the suit
+      hand = [D3, S9, S5, D5];
+      expect(store.add(0, trump, hand)).toEqual(3);
+      expect(store.hands[store.hands.length - 1].cards).toEqual(hand);
+      expect(store.hands[store.hands.length - 1].winner).toEqual(3);
+
+      // Trumps in, takes low!
+      hand = [H2, S8, S6, DK];
+      expect(store.add(3, trump, hand)).toEqual(0);
+      expect(store.hands[store.hands.length - 1].cards).toEqual(hand);
+      expect(store.hands[store.hands.length - 1].winner).toEqual(0);
+
+      // Losing game
+      hand = [CT, CA, CJ, DT];
+      expect(store.add(0, trump, hand)).toEqual(1);
+      expect(store.hands[store.hands.length - 1].cards).toEqual(hand);
+      expect(store.hands[store.hands.length - 1].winner).toEqual(1);
+
+      // Nothing
+      hand = [C3, C2, C7, C6];
+      expect(store.add(1, trump, hand)).toEqual(2);
+      expect(store.hands[store.hands.length - 1].cards).toEqual(hand);
+      expect(store.hands[store.hands.length - 1].winner).toEqual(2);
+
+      // Jack and Jick
+      hand = [DJ, HJ, D7, D6];
+      expect(store.add(2, trump, hand)).toEqual(1);
+      expect(store.hands[store.hands.length - 1].cards).toEqual(hand);
+      expect(store.hands[store.hands.length - 1].winner).toEqual(1);
+
+      store.summarize(trump, [3, 2, -1, -1]);
+
+      expect(store.scores[0].bid).toEqual(3);
+      expect(store.scores[0].jack).toEqual(false);
+      expect(store.scores[0].jick).toEqual(false);
+      expect(store.scores[0].highest).toEqual(true);
+      expect(store.scores[0].lowest).toEqual(true);
+      expect(store.scores[0].game).toEqual(false);
+      expect(store.scores[0].gamePoints).toEqual(17);
+
+      expect(store.scores[1].bid).toEqual(2);
+      expect(store.scores[1].jack).toEqual(true);
+      expect(store.scores[1].jick).toEqual(true);
+      expect(store.scores[1].highest).toEqual(false);
+      expect(store.scores[1].lowest).toEqual(false);
+      expect(store.scores[1].game).toEqual(true);
+      expect(store.scores[1].gamePoints).toEqual(27);
+
+      expect(store.scores[2].bid).toEqual(-1);
+      expect(store.scores[2].jack).toEqual(false);
+      expect(store.scores[2].jick).toEqual(false);
+      expect(store.scores[2].highest).toEqual(false);
+      expect(store.scores[2].lowest).toEqual(false);
+      expect(store.scores[2].game).toEqual(false);
+      expect(store.scores[2].gamePoints).toEqual(0);
+
+      expect(store.scores[3].bid).toEqual(-1);
+      expect(store.scores[3].jack).toEqual(false);
+      expect(store.scores[3].jick).toEqual(false);
+      expect(store.scores[3].highest).toEqual(false);
+      expect(store.scores[3].lowest).toEqual(false);
+      expect(store.scores[3].game).toEqual(true);
       expect(store.scores[3].gamePoints).toEqual(0);
     });
   });

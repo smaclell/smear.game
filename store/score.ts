@@ -9,7 +9,7 @@ export interface PlayerScore {
   jick: boolean;
   highest: boolean;
   lowest: boolean;
-  game: boolean; // TODO: Test it
+  game: boolean;
   gamePoints: number;
 }
 
