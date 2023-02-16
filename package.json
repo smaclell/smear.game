@@ -28,6 +28,7 @@
     "nuxt": "^2.15.8",
     "party-js": "^2.2.0",
     "peerjs": "^1.4.7",
+    "tone": "^14.7.77",
     "vue": "^2.7.10",
     "vue-demi": "^0.13.11",
     "vue-server-renderer": "^2.7.10",

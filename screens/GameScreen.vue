@@ -62,6 +62,7 @@ import { storeToRefs } from 'pinia';
 import { computed, defineComponent } from 'vue';
 import { getDebugSettings } from '@/store/debug';
 import { useGameStore } from '@/store/game';
+import { subscribe } from '@/store/ping';
 import wait from '@/store/waiter';
 import HiddenHand from '@/components/HiddenHand.vue';
 import PlayerHand from '@/components/PlayerHand.vue';
@@ -78,6 +79,7 @@ export default defineComponent({
     const { play, bid } = game;
 
     wait(game);
+    subscribe(game);
 
     return {
       active,

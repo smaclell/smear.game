@@ -69,6 +69,7 @@ import { storeToRefs } from 'pinia';
 import { useConnectionsStore, DefaultGame } from '@/store/connections';
 import { getDebugSettings } from '~/store/debug';
 import { useGameStore } from '@/store/game';
+import { ready } from '@/store/ping';
 
 export default defineComponent({
   name: 'LobbyScreen',
@@ -104,14 +105,16 @@ export default defineComponent({
       name,
       localId,
       players,
-      host() {
+      async host() {
         saveName();
         players.value[0].name = name.value;
         host(DefaultGame);
+        await ready();
       },
-      join() {
+      async join() {
         saveName();
         join(DefaultGame);
+        await ready();
       },
       request,
     };
