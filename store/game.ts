@@ -131,23 +131,25 @@ export const useGameStore = defineStore('game', {
     start(offset: number, dealer: number, deck: Card[]) {
       const starter = (dealer + 1) % PlayerCount;
 
-      for (let i = 0; i < this.players.length; i++) {
-        const x = (starter + i) % PlayerCount;
-        const y = (starter + i + offset) % PlayerCount;
-        const player = this.players[x];
-        player.bid = 0;
-        player.cards = deck.slice(6 * y, 6 * (y + 1));
-        player.cards.sort(reverseSort);
-      }
+      this.$patch((state) => {
+        for (let i = 0; i < state.players.length; i++) {
+          const x = (starter + i) % PlayerCount;
+          const y = (starter + i + offset) % PlayerCount;
+          const player = state.players[x];
+          player.bid = 0;
+          player.cards = deck.slice(6 * y, 6 * (y + 1));
+          player.cards.sort(reverseSort);
+        }
 
-      const scores = useScoreStore();
-      scores.reset();
+        const scores = useScoreStore();
+        scores.reset();
 
-      this.started = starter as PlayerIndex;
-      this.played = 0;
+        state.started = starter as PlayerIndex;
+        state.played = 0;
 
-      this.trump = Suit.Invalid;
-      this.mode = Mode.Bidding;
+        state.trump = Suit.Invalid;
+        state.mode = Mode.Bidding;
+      });
     },
     order(offset: -1 | PlayerIndex, names: [string, string, string, string]) {
       if (this.mode !== Mode.Start) {
