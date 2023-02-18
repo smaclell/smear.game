@@ -1,11 +1,17 @@
 import * as Tone from 'tone';
 import { useGameStore, Mode } from './game';
+import { usePreferencesStore } from './preferences';
 
 export function ready() {
   return Tone.start();
 }
 
 export function play() {
+  const preferences = usePreferencesStore();
+  if (!preferences.sound) {
+    return;
+  }
+
   // From playing with https://tonejs.github.io/examples/monoSynth
   const synth = new Tone.PolySynth(Tone.MonoSynth, {
     volume: -8,

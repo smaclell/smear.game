@@ -53,6 +53,8 @@
         class="control-bar"
         :trump="trump"
       />
+
+      <PreferencesArea :sound.sync="sound" class="player-preferences" />
     </div>
   </div>
 </template>
@@ -63,6 +65,7 @@ import { computed, defineComponent } from 'vue';
 import { getDebugSettings } from '@/store/debug';
 import { useGameStore } from '@/store/game';
 import { subscribe } from '@/store/ping';
+import { usePreferencesStore } from '@/store/preferences';
 import wait from '@/store/waiter';
 import HiddenHand from '@/components/HiddenHand.vue';
 import PlayerHand from '@/components/PlayerHand.vue';
@@ -78,10 +81,14 @@ export default defineComponent({
       storeToRefs(game);
     const { play, bid } = game;
 
+    const preferences = usePreferencesStore();
+    const { sound } = storeToRefs(preferences);
+
     wait(game);
     subscribe(game);
 
     return {
+      sound,
       active,
       ready,
       players,
@@ -128,7 +135,7 @@ export default defineComponent({
   max-height: 640px;
   display: grid;
   grid-template:
-    'cb tt . '
+    'cb tt pp'
     'll pa rr'
     'bb bb bb';
   grid-template-columns: minmax(80px, 150px) minmax(max-content, 1fr) minmax(
@@ -157,6 +164,10 @@ export default defineComponent({
 
 .control-bar {
   grid-area: cb;
+}
+
+.player-preferences {
+  grid-area: pp;
 }
 
 .left,
