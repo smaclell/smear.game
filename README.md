@@ -7,7 +7,11 @@
 - Highlight bids
 - Instant lose if bid 5
 - Stronger connectivity by acknowledging messages and replaying them
-- Add running lowest and highest (highlight them)
+- Add running lowest and highest (highlight them). - Can scoring be on the side live?
+- Larger cards/ images (so smol, see below)
+- Clearer distinction between suits (spades and clubs look very similar)
+- Clearer distinction between trump vs non trump or playable (sad beige) vs non-playable (sadder beige); or bump up playable cards like online euchre
+- Last card auto plays?
 
 ## Because you want to
 
