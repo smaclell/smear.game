@@ -2,10 +2,10 @@
   <BaseCard
     :class="[
       'flex',
-      'flex-col',
       'justify-between',
+      'p-px',
       {
-        'bg-amber-50': highlight,
+        'bg-yellow-50': highlight,
         'bg-white': !highlight,
         'text-red-500': red,
         'text-black': !red,
@@ -14,11 +14,11 @@
     :disabled="!allowed"
     @click="allowed && emit('click', card)"
   >
-    <div class="pl-1 pt-1 justify-start self-start">
+    <div class="justify-start self-start">
       <p>{{ label }}</p>
       <p>{{ icon }}</p>
     </div>
-    <div class="pr-1 pb-1 justify-end self-end">
+    <div class="justify-end self-end">
       <p class="rotate-180">{{ icon }}</p>
       <p class="rotate-180">{{ label }}</p>
     </div>
@@ -73,15 +73,5 @@ const emit = defineEmits<{
 <style lang="postcss" scoped>
 [disabled] > * {
   @apply opacity-50;
-}
-
-.long-name {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .long-name {
-    display: inline;
-  }
 }
 </style>

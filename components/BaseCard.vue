@@ -27,14 +27,14 @@ const emit = defineEmits<{
 
 <style lang="postcss" scoped>
 .card {
-  @apply text-xs;
+  @apply text-xl;
 
   /*
   Warning:
   This does not work as well when it is responsive using min-* and max-*.
   See https://css-tricks.com/almanac/properties/a/aspect-ratio/
   */
-  width: 42px;
+  width: 54px;
   aspect-ratio: 2.25 / 3.5;
   box-sizing: content-box;
 }
@@ -45,19 +45,21 @@ const emit = defineEmits<{
 }
 */
 
-@media (min-width: 480px) {
+@media (min-width: 450px) and (orientation: portrait),
+  (min-height: 450px) and (orientation: landscape) {
   .card {
-    @apply text-sm;
+    @apply text-2xl;
 
-    width: 54px;
+    width: 72px;
   }
 }
 
-@media (min-width: 640px) {
+@media (min-width: 640px) and (orientation: portrait),
+  (min-height: 640px) and (orientation: landscape) {
   .card {
-    @apply text-base;
+    @apply text-4xl;
 
-    width: 72px;
+    width: 96px;
   }
 }
 </style>

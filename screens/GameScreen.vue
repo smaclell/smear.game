@@ -168,6 +168,7 @@ export default defineComponent({
 
 .player-preferences {
   grid-area: pp;
+  justify-self: end;
 }
 
 .left,

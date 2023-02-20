@@ -41,16 +41,11 @@ defineProps<Props>();
   --shift: 0%;
   --offset: 0%;
 
-  transition: transform 0.2s ease-in;
   z-index: calc(10 * var(--pos) + 10);
-
-  /*
-  TODO: Attempt to compute the shift
-  It works with 10% per step
-  */
+  transition: transform 0.2s ease-in;
   transform: translate(calc(100% * var(--diff)), 0%)
-    rotate(calc(-8deg * var(--diff)))
-    translate(calc(-50% * var(--diff)), calc(-1 * var(--shift) - var(--offset)));
+    rotate(calc(-4deg * var(--diff)))
+    translate(calc(-80% * var(--diff)), calc(-1 * var(--shift) - var(--offset)));
 }
 
 .card:hover {
@@ -104,90 +99,5 @@ defineProps<Props>();
 
 [data-length='6'] {
   --mid: 2.5;
-}
-
-/* [data-length='2'] */
-[data-length='2'] [data-position='0'] {
-  --shift: 2.5%;
-}
-
-[data-length='2'] [data-position='1'] {
-  --shift: 2.5%;
-}
-
-/* [data-length='3'] */
-[data-length='3'] [data-position='0'] {
-  --shift: 5%;
-}
-
-[data-length='3'] [data-position='1'] {
-  --shift: 2.5%;
-}
-
-[data-length='3'] [data-position='2'] {
-  --shift: 5%;
-}
-
-/* [data-length='4'] */
-[data-length='4'] [data-position='0'] {
-  --shift: 10%;
-}
-
-[data-length='4'] [data-position='1'] {
-  --shift: 5%;
-}
-
-[data-length='4'] [data-position='2'] {
-  --shift: 5%;
-}
-
-[data-length='4'] [data-position='3'] {
-  --shift: 10%;
-}
-
-/* [data-length='5'] */
-[data-length='5'] [data-position='0'] {
-  --shift: 10%;
-}
-
-[data-length='5'] [data-position='1'] {
-  --shift: 5%;
-}
-
-[data-length='5'] [data-position='2'] {
-  --shift: 2.5%;
-}
-
-[data-length='5'] [data-position='3'] {
-  --shift: 5%;
-}
-
-[data-length='5'] [data-position='4'] {
-  --shift: 10%;
-}
-
-/* [data-length='6'] */
-[data-length='6'] [data-position='0'] {
-  --shift: 20%;
-}
-
-[data-length='6'] [data-position='1'] {
-  --shift: 10%;
-}
-
-[data-length='6'] [data-position='2'] {
-  --shift: 5%;
-}
-
-[data-length='6'] [data-position='3'] {
-  --shift: 5%;
-}
-
-[data-length='6'] [data-position='4'] {
-  --shift: 10%;
-}
-
-[data-length='6'] [data-position='5'] {
-  --shift: 20%;
 }
 </style>
