@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" class="p-4 text-xl gap-2 container">
+  <div ref="root" class="p-4 text-lg lg:text-xl gap-2 container">
     <div class="span-2 center text-4xl m-4 p-2 font-bold">
       <template v-if="done">
         <p v-if="red > blue" class="winning">You won!</p>

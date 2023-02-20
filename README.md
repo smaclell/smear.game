@@ -7,8 +7,6 @@
 - Highlight bids
 - Instant lose if bid 5
 - Stronger connectivity by acknowledging messages and replaying them
-- Add running lowest and highest (highlight them). - Can scoring be on the side live?
-- Last card auto plays?
 
 ## Because you want to
 
