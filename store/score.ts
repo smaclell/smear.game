@@ -19,6 +19,7 @@ type Hand = {
 };
 
 type State = {
+  done: boolean;
   red: number;
   blue: number;
   scores: PlayerScore[];
@@ -52,6 +53,7 @@ function createEmptyScore(id: PlayerIndex) {
 
 export const useScoreStore = defineStore('score', {
   state: (): State => ({
+    done: false,
     red: 0,
     blue: 0,
     scores: [
@@ -62,9 +64,6 @@ export const useScoreStore = defineStore('score', {
     ],
     hands: [],
   }),
-  getters: {
-    done: (state) => state.red >= 15 || state.blue >= 15,
-  },
   actions: {
     reset() {
       this.$patch((state) => {
@@ -214,6 +213,7 @@ export const useScoreStore = defineStore('score', {
       this.$patch((state) => {
         state.red = state.red + red;
         state.blue = state.blue + blue;
+        state.done = state.red >= 15 || state.blue >= 15;
         state.hands = [];
       });
     },
